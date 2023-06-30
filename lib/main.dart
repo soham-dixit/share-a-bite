@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_a_bite/onboarding/intro_carousel.dart';
 import 'signup.dart';
 import 'login.dart';
 
@@ -11,10 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      initialRoute: '/carousel',
       routes: {
         '/login': (context) => Login(),
         '/signup': (context) => Signup(),
+        '/carousel':(context) => IntroCarousel(),
       },
     );
   }
