@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login/validate.dart';
+import 'package:share_a_bite/validate.dart';
 import 'login.dart';
 
 class Signup extends StatefulWidget {
