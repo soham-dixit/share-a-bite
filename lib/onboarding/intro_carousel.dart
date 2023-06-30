@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intro_slider/intro_slider.dart';
 
 class IntroCarousel extends StatefulWidget {
@@ -17,23 +18,15 @@ class _IntroCarouselState extends State<IntroCarousel> {
 
     for (var i = 1; i < 6; i++) {
       slides.add(Slide(
-          backgroundImage: 'assets/carousel/${i}.png',
+          backgroundImage: 'assets/carousel/$i.png',
           backgroundImageFit: BoxFit.contain,
           backgroundColor: Colors.white,
           backgroundOpacity: 0));
     }
-
-    // slides.add(Slide(
-    //   backgroundImage: 'assets/carousel/1.png',
-    //   backgroundImageFit: BoxFit.contain,
-    //   backgroundColor: Colors.white,
-    //   backgroundOpacity: 0
-    // ));
   }
 
   void onDonePress() {
-    // Do what you want
-    Navigator.pop(context);
+    Get.offNamed('/login');
   }
 
   ButtonStyle myButtonStyle() {
@@ -42,14 +35,13 @@ class _IntroCarouselState extends State<IntroCarousel> {
       backgroundColor:
           MaterialStateProperty.all<Color>(const Color(0xffff3333)),
       foregroundColor: MaterialStateProperty.all<Color>(
-          const Color(0xffffffff)), // Change text color here
+          const Color(0xffffffff)),
       textStyle: MaterialStateProperty.all<TextStyle>(
         const TextStyle(
           fontFamily: 'Poppins',
           fontWeight: FontWeight.bold,
         ),
       ),
-      // overlayColor: MaterialStateProperty.all<Color>(const Color(0x33ffcc5c)),
     );
   }
 
