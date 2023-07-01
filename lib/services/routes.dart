@@ -1,11 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:share_a_bite/onboarding/intro_carousel.dart';
+import 'package:share_a_bite/onboarding/SplashScreen.dart';
+import 'package:share_a_bite/onboarding/carousel.dart';
 
 appRoutes() => [
       GetPage(
         name: '/carousel',
         page: () => const IntroCarousel(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/SplashScreen',
+        page: () => const SplashScreen(),
         transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
