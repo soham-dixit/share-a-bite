@@ -26,7 +26,7 @@ class _IntroCarouselState extends State<IntroCarousel> {
   }
 
   void onDonePress() {
-    Get.offNamed('/login');
+    Get.offNamed('/MainLogin');
   }
 
   ButtonStyle myButtonStyle() {

@@ -1,9 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/login/GroceryLogin.dart';
+import 'package:share_a_bite/login/GuestLogin.dart';
+import 'package:share_a_bite/login/MainLogin.dart';
+import 'package:share_a_bite/login/NgoOpLogin.dart';
+import 'package:share_a_bite/login/NgoVolLogin.dart';
+import 'package:share_a_bite/login/RestroLogin.dart';
+import 'package:share_a_bite/login/RuDeliverLogin.dart';
+import 'package:share_a_bite/login/RuOpLogin.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
 import 'package:share_a_bite/onboarding/carousel.dart';
+import 'package:share_a_bite/restro/RestroVerify.dart';
 
 appRoutes() => [
+      GetPage(
+        name: '/SplashScreen',
+        page: () => const SplashScreen(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
       GetPage(
         name: '/carousel',
         page: () => const IntroCarousel(),
@@ -11,8 +26,56 @@ appRoutes() => [
         middlewares: [MyMiddelware()],
       ),
       GetPage(
-        name: '/SplashScreen',
-        page: () => const SplashScreen(),
+        name: '/MainLogin',
+        page: () => const MainLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/RestroLogin',
+        page: () => const RestroLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/GroceryLogin',
+        page: () => const GroceryLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoVolLogin',
+        page: () => const NgoVolLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoOpLogin',
+        page: () => const NgoOpLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/RuDeliveryLogin',
+        page: () => const RuDeliveryLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/RuOpLogin',
+        page: () => const RuOpLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/GuestLogin',
+        page: () => const GuestLogin(),
+        transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/RestroVerify',
+        page: () => const RestroVerify(),
         transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
