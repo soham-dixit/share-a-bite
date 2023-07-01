@@ -1,13 +1,29 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/services/aes.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
+import 'package:crypto/crypto.dart';
 
 class RestroVerify extends StatefulWidget {
-  const RestroVerify({super.key});
+  final String name;
+  final String email;
+  final String address;
+  final String license;
+  final String password;
+  final String phone;
+
+  const RestroVerify(
+      {super.key,
+      required this.name,
+      required this.email,
+      required this.address,
+      required this.license,
+      required this.password,
+      required this.phone});
 
   @override
   State<RestroVerify> createState() => _RestroVerifyState();
@@ -151,7 +167,15 @@ class _RestroVerifyState extends State<RestroVerify> {
                   onPressed: () async {
                     bool result = await verifyCodeNew(code);
                     if (result) {
-                      Get.to(() => const RestroVerify2());
+                      Get.to(() => RestroVerify2(
+                            // send all the data to the next screen
+                            name: widget.name,
+                            email: widget.email,
+                            address: widget.address,
+                            license: widget.license,
+                            password: widget.password,
+                            phone: widget.phone,
+                          ));
                     } else {
                       Get.snackbar(
                           "Error", "Please verify your mobile number!");
@@ -166,7 +190,21 @@ class _RestroVerifyState extends State<RestroVerify> {
 }
 
 class RestroVerify2 extends StatefulWidget {
-  const RestroVerify2({super.key});
+  final String name;
+  final String email;
+  final String address;
+  final String license;
+  final String password;
+  final String phone;
+
+  const RestroVerify2(
+      {super.key,
+      required this.name,
+      required this.email,
+      required this.address,
+      required this.license,
+      required this.password,
+      required this.phone});
 
   @override
   State<RestroVerify2> createState() => _RestroVerify2State();
@@ -183,6 +221,41 @@ class _RestroVerify2State extends State<RestroVerify2> {
       return true;
     } else {
       return false;
+    }
+  }
+
+  registerRestro() async {
+    Map<String, dynamic> data = {
+      'name': widget.name,
+      'email': widget.email,
+      'address': widget.address,
+      'license': widget.license,
+      'password': widget.password,
+      'phone': widget.phone,
+    };
+
+    // encrypt the password, call encryptAES() function from aes.dart
+    data['password'] = EncryptData.encryptAES(data['password']);
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: widget.email,
+        password: widget.password,
+      );
+      await FirebaseFirestore.instance
+          .collection('restaurants')
+          .doc(userCredential.user!.uid)
+          .set(data);
+      Get.snackbar('Success!', 'Restaurant registered successfully');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -310,6 +383,7 @@ class _RestroVerify2State extends State<RestroVerify2> {
                   onPressed: () async {
                     bool result = await verifyCodeNew(code);
                     if (result) {
+                      registerRestro();
                     } else {
                       Get.snackbar(
                           "Error", "Please verify your email address!");

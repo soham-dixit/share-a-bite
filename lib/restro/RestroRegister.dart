@@ -203,7 +203,14 @@ class _RestroRegisterState extends State<RestroRegister> {
                           //   _emailController.text,
                           //   _passwordController.text
                           // ];
-                          Get.to(() => RestroLogin2());
+                          print(_nameController.text.toString());
+                          print(_emailController.text.toString());
+                          print(_contactController.text.toString());
+                          Get.to(() => RestroLogin2(
+                                name: _nameController.text.toString(),
+                                email: _emailController.text.toString(),
+                                contact: _contactController.text.toString(),
+                              ));
                         }
                       },
                     ),
@@ -250,7 +257,15 @@ class _RestroRegisterState extends State<RestroRegister> {
 }
 
 class RestroLogin2 extends StatefulWidget {
-  const RestroLogin2({Key? key}) : super(key: key);
+  final String name;
+  final String email;
+  final String contact;
+  const RestroLogin2(
+      {Key? key,
+      required this.name,
+      required this.email,
+      required this.contact})
+      : super(key: key);
 
   @override
   _RestroLogin2State createState() => _RestroLogin2State();
@@ -439,8 +454,15 @@ class _RestroLogin2State extends State<RestroLogin2> {
                           //   _emailController.text,
                           //   _passwordController.text
                           // ];
+                          Get.to(() => RestroVerify(
+                            name: widget.name,
+                            email: widget.email,
+                            phone: widget.contact,
+                            password: _passwordController.text.toString(),
+                            address: _addressController.text.toString(),
+                            license: _licenseController.text.toString(),
+                          ));
                         }
-                        Get.to(() => const RestroVerify());
                       },
                     ),
                     const SizedBox(

@@ -43,6 +43,8 @@ dependencies:
   flutter_svg: ^2.0.5
   form_field_validator: ^1.1.0
   flutter_otp_text_field: ^1.1.1
+  cloud_firestore: ^4.8.2
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:

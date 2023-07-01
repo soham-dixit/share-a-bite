@@ -75,7 +75,14 @@ appRoutes() => [
       ),
       GetPage(
         name: '/RestroVerify',
-        page: () => const RestroVerify(),
+        page: () => const RestroVerify(
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          license: '',
+          password: '',
+        ),
         transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
