@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "804050289685",
+    "project_id": "share-a-bite-sih23",
+    "storage_bucket": "share-a-bite-sih23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804050289685:android:cefc643490570ac8a8ba1c",
+        "android_client_info": {
+          "package_name": "com.example.share_a_bite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "804050289685-baufnpo9cu2jdmgr6vlral2jr31c57r6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7a6s7g297OCXwZXECG3KU77TCTYb9-3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "804050289685-baufnpo9cu2jdmgr6vlral2jr31c57r6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "804050289685-9a2n4bp8doqpu9n77hjsfu28rftmm8bs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shareABite"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

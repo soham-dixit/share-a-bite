@@ -37,6 +37,9 @@ dependencies:
   intro_slider: ^3.0.9
   get: ^4.6.5
   shared_preferences: ^2.1.2
+  firebase_core: ^2.14.0
+  firebase_auth: ^4.6.3
+  firebase_storage: ^11.2.4
 
 dev_dependencies:
   flutter_test:
