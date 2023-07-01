@@ -16,7 +16,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
       color: const Color(0xffff3333),
       title: 'Share-a-Bite',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/carousel',
+      initialRoute: '/SplashScreen',
       getPages: appRoutes(),
     );
   }
