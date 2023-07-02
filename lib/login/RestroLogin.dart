@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/restro/RestroRegister.dart';
+import 'package:share_a_bite/services/aes.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 
 class RestroLogin extends StatefulWidget {
@@ -36,6 +38,23 @@ class _RestroLoginState extends State<RestroLogin> {
 
   navigateToRegister() {
     Get.to(const RestroRegister());
+  }
+
+  restroLogin(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      Get.snackbar(
+        'Login Successful!',
+        'You have been logged in successfully',
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
 
   @override
@@ -138,7 +157,7 @@ class _RestroLoginState extends State<RestroLogin> {
                           // fontWeight: FontWeight.bold,
                         ),
                         obscureText: true,
-                        validator: passwordValidator,
+                        // validator: passwordValidator,
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
                           label: Text('Password'),
@@ -164,12 +183,15 @@ class _RestroLoginState extends State<RestroLogin> {
                       ),
                       MainButton(
                         initialTitle: 'Login',
-                        onPressed: () {
+                        onPressed: () async {
                           if (formKey.currentState!.validate()) {
-                            inputs = [
-                              _emailController.text,
-                              _passwordController.text
-                            ];
+                            // inputs = [
+                            //   _emailController.text,
+                            //   _passwordController.text
+                            // ];
+                            restroLogin(_emailController.text,
+                                _passwordController.text);
+                            // await FirebaseAuth.instance.signOut();
                           }
                         },
                       ),

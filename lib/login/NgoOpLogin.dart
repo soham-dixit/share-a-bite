@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -34,6 +35,23 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
 
   registerNgo() {
     Get.toNamed('/NgoRegister');
+  }
+
+  NgoOpLogin(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      Get.snackbar(
+        'Login Successful!',
+        'You have been logged in successfully',
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
 
   @override
@@ -169,6 +187,8 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
                             //   _emailController.text,
                             //   _passwordController.text
                             // ];
+                            NgoOpLogin(_emailController.text,
+                                _passwordController.text);
                           }
                         },
                       ),

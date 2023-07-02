@@ -232,9 +232,6 @@ class _NgoVerify2State extends State<NgoVerify2> {
       'phone': widget.phone,
     };
 
-    // encrypt the password, call encryptAES() function from aes.dart
-    data['password'] = EncryptData.encryptAES(data['password']);
-
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(

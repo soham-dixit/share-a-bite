@@ -417,6 +417,7 @@ class _RestroRegister2State extends State<RestroRegister2> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
+                      obscureText: true,
                       style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18,
@@ -455,13 +456,13 @@ class _RestroRegister2State extends State<RestroRegister2> {
                           //   _passwordController.text
                           // ];
                           Get.to(() => RestroVerify(
-                            name: widget.name,
-                            email: widget.email,
-                            phone: widget.contact,
-                            password: _passwordController.text.toString(),
-                            address: _addressController.text.toString(),
-                            license: _licenseController.text.toString(),
-                          ));
+                                name: widget.name,
+                                email: widget.email,
+                                phone: widget.contact,
+                                password: _passwordController.text.toString(),
+                                address: _addressController.text.toString(),
+                                license: _licenseController.text.toString(),
+                              ));
                         }
                       },
                     ),
