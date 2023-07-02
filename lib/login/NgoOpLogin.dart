@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/CommonWidgets.dart';
 
@@ -38,6 +39,15 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
     Get.toNamed('/NgoRegister');
   }
 
+  navigateToHome() async {
+    Get.offAllNamed('/NgoHome');
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser?.uid);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
+    }
+  }
+
   NgoOpLogin(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -46,6 +56,7 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
+      navigateToHome();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email');

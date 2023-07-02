@@ -36,8 +36,6 @@ class _RestroLoginState extends State<RestroLogin> {
   List inputs = [];
 
   navigateToRegister() {
-    // save user id of current logged in user in shared preferences
-
     Get.to(const RestroRegister());
   }
 

@@ -8,6 +8,7 @@ import 'package:share_a_bite/login/NgoVolLogin.dart';
 import 'package:share_a_bite/login/RestroLogin.dart';
 import 'package:share_a_bite/login/RuDeliverLogin.dart';
 import 'package:share_a_bite/login/RuOpLogin.dart';
+import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
 import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
@@ -108,6 +109,11 @@ appRoutes() => [
       GetPage(
         name: '/RestroHome',
         page: () => const RestroHome(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoHome',
+        page: () => const NgoHome(),
         middlewares: [MyMiddelware()],
       ),
     ];
