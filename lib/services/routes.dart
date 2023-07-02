@@ -19,6 +19,7 @@ import 'package:share_a_bite/onboarding/carousel.dart';
 import 'package:share_a_bite/recycling_unit/RuHome.dart';
 import 'package:share_a_bite/recycling_unit/RuRegister.dart';
 import 'package:share_a_bite/recycling_unit/RuVerify.dart';
+import 'package:share_a_bite/restro/DistributeForm.dart';
 import 'package:share_a_bite/restro/RestroHome.dart';
 import 'package:share_a_bite/restro/RestroVerify.dart';
 
@@ -150,6 +151,11 @@ appRoutes() => [
       GetPage(
         name: '/RuHome',
         page: () => const RuHome(),
+        middlewares: [MyMiddelware()],
+      ),
+       GetPage(
+        name: '/DistributeForm',
+        page: () => const DistributeForm(),
         middlewares: [MyMiddelware()],
       ),
     ];

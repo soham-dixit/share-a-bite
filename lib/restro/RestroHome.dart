@@ -184,7 +184,8 @@ class _RestroHomeState extends State<RestroHome> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        setState(() {});
+                        // setState(() {});
+                        Get.toNamed('/DistributeForm');
                       },
                       child: Container(
                         width: 300,
