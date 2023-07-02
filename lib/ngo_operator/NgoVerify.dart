@@ -229,7 +229,7 @@ class _NgoVerify2State extends State<NgoVerify2> {
       'email': widget.email,
       'address': widget.address,
       'license': widget.license,
-      'password': widget.password,
+      // 'password': widget.password,
       'phone': widget.phone,
     };
 

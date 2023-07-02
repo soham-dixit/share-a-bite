@@ -49,8 +49,16 @@ class _RestroLoginState extends State<RestroLogin> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
+        Get.snackbar(
+          'Error!',
+          'No user found for this email',
+        );
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
+        Get.snackbar(
+          'Error!',
+          'Wrong password provided for this user',
+        );
       }
     }
   }

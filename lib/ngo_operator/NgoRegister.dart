@@ -43,6 +43,7 @@ class _RegisterNgoState extends State<RegisterNgo> {
   navigateToLogin() {
     Get.back();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -416,6 +417,7 @@ class _NgoRegister2State extends State<NgoRegister2> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
+                      obscureText: true,
                       style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18,

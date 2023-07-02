@@ -231,7 +231,7 @@ class _RestroVerify2State extends State<RestroVerify2> {
       'email': widget.email,
       'address': widget.address,
       'license': widget.license,
-      'password': widget.password,
+      // 'password': widget.password,
       'phone': widget.phone,
     };
 
