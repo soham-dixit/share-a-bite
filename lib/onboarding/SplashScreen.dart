@@ -64,8 +64,27 @@ class _SplashScreenState extends State<SplashScreen>
           // UID exists in the 'ngo' collection, navigate to the ngo page
           Get.toNamed('/NgoHome');
         } else {
-          // UID doesn't exist in either collection, navigate to the carousel page
-          Get.toNamed('/carousel');
+          // UID doesn't exist in the 'ngo' collection, check if it exists in the 'grocery_stores' collection
+          DocumentSnapshot grocerySnapshot = await FirebaseFirestore.instance
+              .collection('grocery_stores')
+              .doc(uid)
+              .get();
+          if (grocerySnapshot.exists) {
+            // UID exists in the 'grocery_stores' collection, navigate to the ngo page
+            Get.toNamed('/GroceryHome');
+          } else {
+            // UID doesn't exist in the 'grocery_stores' collection, check if it exists in the 'recycling_units' collection
+            DocumentSnapshot ruSnapshot = await FirebaseFirestore.instance
+                .collection('recycling_units')
+                .doc(uid)
+                .get();
+            if (ruSnapshot.exists) {
+              // UID exists in the 'recycling_units' collection, navigate to the recycling unit page
+              Get.toNamed('/RuHome');
+            } else {
+              Get.toNamed('/carousel');
+            }
+          }
         }
       }
     }
