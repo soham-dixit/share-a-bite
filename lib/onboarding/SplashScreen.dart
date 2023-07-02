@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,13 +35,42 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed && !_isLogoAnimationCompleted) {
         _isLogoAnimationCompleted = true;
-        _navigateToCarouselPage();
+        _navigate();
       }
     });
   }
 
-  _navigateToCarouselPage() {
-    Get.offAllNamed('/carousel');
+  _navigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+
+    if (uid == null) {
+      // UID is not set, navigate to the carousel page
+      Get.toNamed('/carousel');
+    } else {
+      // UID is set, check if it exists in the 'restaurants' collection
+      DocumentSnapshot restaurantSnapshot = await FirebaseFirestore.instance
+          .collection('restaurants')
+          .doc(uid)
+          .get();
+
+      if (restaurantSnapshot.exists) {
+        // UID exists in the 'restaurants' collection, navigate to the restaurants page
+        Get.toNamed('/RestroHome');
+      } else {
+        // UID doesn't exist in the 'restaurants' collection, check if it exists in the 'ngo' collection
+        DocumentSnapshot ngoSnapshot =
+            await FirebaseFirestore.instance.collection('ngo').doc(uid).get();
+
+        if (ngoSnapshot.exists) {
+          // UID exists in the 'ngo' collection, navigate to the ngo page
+          Get.toNamed('/NgoHome');
+        } else {
+          // UID doesn't exist in either collection, navigate to the carousel page
+          Get.toNamed('/carousel');
+        }
+      }
+    }
   }
 
   @override
