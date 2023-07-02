@@ -252,6 +252,7 @@ class _RestroVerify2State extends State<RestroVerify2> {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
+        Get.snackbar('Error', 'The account already exists for this email');
       }
     } catch (e) {
       print(e);
