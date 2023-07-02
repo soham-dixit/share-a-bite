@@ -416,7 +416,7 @@ class _NgoRegister2State extends State<NgoRegister2> {
                       controller: _passwordController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.text,
                       obscureText: true,
                       style: const TextStyle(
                         fontFamily: 'Poppins',
