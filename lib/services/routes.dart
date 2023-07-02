@@ -8,6 +8,8 @@ import 'package:share_a_bite/login/NgoVolLogin.dart';
 import 'package:share_a_bite/login/RestroLogin.dart';
 import 'package:share_a_bite/login/RuDeliverLogin.dart';
 import 'package:share_a_bite/login/RuOpLogin.dart';
+import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
+import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
 import 'package:share_a_bite/onboarding/carousel.dart';
 import 'package:share_a_bite/restro/RestroVerify.dart';
@@ -52,7 +54,6 @@ appRoutes() => [
       GetPage(
         name: '/NgoOpLogin',
         page: () => const NgoOpLogin(),
-        transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
       GetPage(
@@ -84,6 +85,23 @@ appRoutes() => [
           password: '',
         ),
         transition: Transition.zoom,
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoVerify',
+        page: () => const NgoVerify(
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          license: '',
+          password: '',
+        ),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoRegister',
+        page: () => const RegisterNgo(),
         middlewares: [MyMiddelware()],
       ),
     ];

@@ -4,15 +4,15 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:share_a_bite/login/RestroLogin.dart';
-import 'package:share_a_bite/restro/RestroVerify.dart';
+import 'package:share_a_bite/login/NgoOpLogin.dart';
+import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 
-class RestroRegister extends StatefulWidget {
-  const RestroRegister({super.key});
+class RegisterNgo extends StatefulWidget {
+  const RegisterNgo({super.key});
 
   @override
-  State<RestroRegister> createState() => _RestroRegisterState();
+  State<RegisterNgo> createState() => _RegisterNgoState();
 }
 
 final TextEditingController _nameController = TextEditingController();
@@ -22,7 +22,7 @@ final TextEditingController _licenseController = TextEditingController();
 final TextEditingController _addressController = TextEditingController();
 final TextEditingController _passwordController = TextEditingController();
 
-class _RestroRegisterState extends State<RestroRegister> {
+class _RegisterNgoState extends State<RegisterNgo> {
   final formKey = GlobalKey<FormState>();
 
   final emailValidator = MultiValidator([
@@ -43,7 +43,6 @@ class _RestroRegisterState extends State<RestroRegister> {
   navigateToLogin() {
     Get.back();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +58,7 @@ class _RestroRegisterState extends State<RestroRegister> {
                 height: 18,
               ),
               const Text(
-                'Register as Restaurant',
+                'Register as NGO',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 26,
@@ -70,7 +69,7 @@ class _RestroRegisterState extends State<RestroRegister> {
                 height: 10,
               ),
               SvgPicture.asset(
-                'assets/users/restro.svg',
+                'assets/users/ngo.svg',
                 height: 100,
               ),
               const SizedBox(
@@ -106,7 +105,7 @@ class _RestroRegisterState extends State<RestroRegister> {
                       validator: nameValidator,
                       cursorColor: Colors.black,
                       decoration: InputDecoration(
-                        label: Text('Business Name'),
+                        label: Text('NGO Name'),
                         labelStyle: TextStyle(
                           color: Colors.grey.shade700,
                         ),
@@ -206,7 +205,7 @@ class _RestroRegisterState extends State<RestroRegister> {
                           print(_nameController.text.toString());
                           print(_emailController.text.toString());
                           print(_contactController.text.toString());
-                          Get.to(() => RestroRegister2(
+                          Get.to(() => NgoRegister2(
                                 name: _nameController.text.toString(),
                                 email: _emailController.text.toString(),
                                 contact: _contactController.text.toString(),
@@ -256,11 +255,11 @@ class _RestroRegisterState extends State<RestroRegister> {
   }
 }
 
-class RestroRegister2 extends StatefulWidget {
+class NgoRegister2 extends StatefulWidget {
   final String name;
   final String email;
   final String contact;
-  const RestroRegister2(
+  const NgoRegister2(
       {Key? key,
       required this.name,
       required this.email,
@@ -268,10 +267,10 @@ class RestroRegister2 extends StatefulWidget {
       : super(key: key);
 
   @override
-  _RestroRegister2State createState() => _RestroRegister2State();
+  _NgoRegister2State createState() => _NgoRegister2State();
 }
 
-class _RestroRegister2State extends State<RestroRegister2> {
+class _NgoRegister2State extends State<NgoRegister2> {
   final formKey = GlobalKey<FormState>();
 
   final passwordValidator = MultiValidator([
@@ -292,7 +291,7 @@ class _RestroRegister2State extends State<RestroRegister2> {
   ]);
 
   navigateToLogin() {
-    Get.offAll(() => const RestroLogin());
+    Get.offAll(() => const NgoOpLogin());
   }
 
   @override
@@ -310,7 +309,7 @@ class _RestroRegister2State extends State<RestroRegister2> {
                 height: 18,
               ),
               const Text(
-                'Register as Restaurant',
+                'Register as NGO',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 26,
@@ -321,7 +320,7 @@ class _RestroRegister2State extends State<RestroRegister2> {
                 height: 10,
               ),
               SvgPicture.asset(
-                'assets/users/restro.svg',
+                'assets/users/ngo.svg',
                 height: 100,
               ),
               const SizedBox(
@@ -454,14 +453,14 @@ class _RestroRegister2State extends State<RestroRegister2> {
                           //   _emailController.text,
                           //   _passwordController.text
                           // ];
-                          Get.to(() => RestroVerify(
-                            name: widget.name,
-                            email: widget.email,
-                            phone: widget.contact,
-                            password: _passwordController.text.toString(),
-                            address: _addressController.text.toString(),
-                            license: _licenseController.text.toString(),
-                          ));
+                          Get.to(() => NgoVerify(
+                                name: widget.name,
+                                email: widget.email,
+                                phone: widget.contact,
+                                password: _passwordController.text.toString(),
+                                address: _addressController.text.toString(),
+                                license: _licenseController.text.toString(),
+                              ));
                         }
                       },
                     ),
