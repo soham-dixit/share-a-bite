@@ -6,6 +6,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/restro/RestroRegister.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RestroLogin extends StatefulWidget {
   const RestroLogin({super.key});
@@ -35,7 +36,18 @@ class _RestroLoginState extends State<RestroLogin> {
   List inputs = [];
 
   navigateToRegister() {
+    // save user id of current logged in user in shared preferences
+
     Get.to(const RestroRegister());
+  }
+
+  navigateToHome() async {
+    Get.offAllNamed('/RestroHome');
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser?.uid);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
+    }
   }
 
   restroLogin(String email, String password) async {
@@ -46,6 +58,7 @@ class _RestroLoginState extends State<RestroLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
+      navigateToHome();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

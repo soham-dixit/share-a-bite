@@ -12,6 +12,7 @@ import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
 import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
 import 'package:share_a_bite/onboarding/carousel.dart';
+import 'package:share_a_bite/restro/RestroHome.dart';
 import 'package:share_a_bite/restro/RestroVerify.dart';
 
 appRoutes() => [
@@ -102,6 +103,11 @@ appRoutes() => [
       GetPage(
         name: '/NgoRegister',
         page: () => const RegisterNgo(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/RestroHome',
+        page: () => const RestroHome(),
         middlewares: [MyMiddelware()],
       ),
     ];
