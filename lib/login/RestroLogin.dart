@@ -1,12 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/restro/RestroRegister.dart';
-import 'package:share_a_bite/services/aes.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 
 class RestroLogin extends StatefulWidget {
@@ -54,6 +52,17 @@ class _RestroLoginState extends State<RestroLogin> {
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
       }
+    }
+  }
+
+  checkEmailExists(String email, String password) async {
+    final restaurantsRef = FirebaseFirestore.instance.collection('restaurants');
+    final querySnapshot =
+        await restaurantsRef.where('email', isEqualTo: email).get();
+    if (querySnapshot.docs.isEmpty) {
+      Get.snackbar("Error!", "Please register your account");
+    } else {
+      restroLogin(email, password);
     }
   }
 
@@ -183,13 +192,15 @@ class _RestroLoginState extends State<RestroLogin> {
                       ),
                       MainButton(
                         initialTitle: 'Login',
-                        onPressed: () async {
+                        onPressed: () {
                           if (formKey.currentState!.validate()) {
                             // inputs = [
                             //   _emailController.text,
                             //   _passwordController.text
                             // ];
-                            restroLogin(_emailController.text,
+                            // restroLogin(_emailController.text,
+                            //     _passwordController.text);
+                            checkEmailExists(_emailController.text,
                                 _passwordController.text);
                             // await FirebaseAuth.instance.signOut();
                           }

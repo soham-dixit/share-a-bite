@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/login/NgoOpLogin.dart';
 import 'package:share_a_bite/services/aes.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 
@@ -40,7 +41,7 @@ class _NgoVerifyState extends State<NgoVerify> {
       return false;
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -243,6 +244,7 @@ class _NgoVerify2State extends State<NgoVerify2> {
           .doc(userCredential.user!.uid)
           .set(data);
       Get.snackbar('Success!', 'NGO registered successfully');
+      Get.offAll(() => const NgoOpLogin());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/login/RestroLogin.dart';
 import 'package:share_a_bite/services/aes.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:crypto/crypto.dart';
@@ -245,6 +246,7 @@ class _RestroVerify2State extends State<RestroVerify2> {
           .doc(userCredential.user!.uid)
           .set(data);
       Get.snackbar('Success!', 'Restaurant registered successfully');
+      Get.offAll(() => const RestroLogin());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -51,6 +52,17 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
       }
+    }
+  }
+
+  checkEmailExists(String email, String password) async {
+    final restaurantsRef = FirebaseFirestore.instance.collection('ngo');
+    final querySnapshot =
+        await restaurantsRef.where('email', isEqualTo: email).get();
+    if (querySnapshot.docs.isEmpty) {
+      Get.snackbar("Error!", "Please register your account");
+    } else {
+      NgoOpLogin(email, password);
     }
   }
 
@@ -187,7 +199,9 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
                             //   _emailController.text,
                             //   _passwordController.text
                             // ];
-                            NgoOpLogin(_emailController.text,
+                            // NgoOpLogin(_emailController.text,
+                            //     _passwordController.text);
+                            checkEmailExists(_emailController.text,
                                 _passwordController.text);
                           }
                         },
