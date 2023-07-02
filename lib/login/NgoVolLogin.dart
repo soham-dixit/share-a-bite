@@ -97,7 +97,7 @@ class _NgoVolLoginState extends State<NgoVolLogin> {
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 10,
               ),
               SvgPicture.asset(
                 'assets/users/ngo_vol.svg',
