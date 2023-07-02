@@ -33,7 +33,9 @@ class RestroVerify extends StatefulWidget {
 class _RestroVerifyState extends State<RestroVerify> {
   String code = "";
 
-  sendCodeAgain() {}
+  sendCodeAgain() {
+    Get.snackbar('Success!', 'OTP sent successfully');
+  }
 
   verifyCodeNew(String code) async {
     if ("1234" == code) {
@@ -134,7 +136,7 @@ class _RestroVerifyState extends State<RestroVerify> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Didn\'t received the code? ',
+                    'Didn\'t receive the code? ',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -349,7 +351,7 @@ class _RestroVerify2State extends State<RestroVerify2> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Didn\'t received the code? ',
+                    'Didn\'t receive the code? ',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,

@@ -31,7 +31,9 @@ class NgoVerify extends StatefulWidget {
 class _NgoVerifyState extends State<NgoVerify> {
   String code = "";
 
-  sendCodeAgain() {}
+  sendCodeAgain() {
+    Get.snackbar('Success!', 'OTP sent successfully');
+  }
 
   verifyCodeNew(String code) async {
     if ("1234" == code) {
@@ -132,7 +134,7 @@ class _NgoVerifyState extends State<NgoVerify> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Didn\'t received the code? ',
+                    'Didn\'t receive the code? ',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -347,7 +349,7 @@ class _NgoVerify2State extends State<NgoVerify2> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Didn\'t received the code? ',
+                    'Didn\'t receive the code? ',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
