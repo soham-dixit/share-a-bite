@@ -92,7 +92,7 @@ class _NgoVolLoginState extends State<NgoVolLogin> {
                 'Login as NGO Volunteer',
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontSize: 26,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
