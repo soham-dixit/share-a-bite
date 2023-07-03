@@ -22,6 +22,7 @@ import 'package:share_a_bite/recycling_unit/RuVerify.dart';
 import 'package:share_a_bite/restro/DistributeForm.dart';
 import 'package:share_a_bite/restro/RestroHome.dart';
 import 'package:share_a_bite/restro/RestroVerify.dart';
+import 'package:share_a_bite/restro/menu.dart';
 
 appRoutes() => [
       GetPage(
@@ -138,7 +139,7 @@ appRoutes() => [
         page: () => const GroceryHome(),
         middlewares: [MyMiddelware()],
       ),
-       GetPage(
+      GetPage(
         name: '/RuRegister',
         page: () => const RuRegister(),
         middlewares: [MyMiddelware()],
@@ -153,9 +154,14 @@ appRoutes() => [
         page: () => const RuHome(),
         middlewares: [MyMiddelware()],
       ),
-       GetPage(
+      GetPage(
         name: '/DistributeForm',
         page: () => const DistributeForm(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/RestroMenu',
+        page: () => const RestroMenu(),
         middlewares: [MyMiddelware()],
       ),
     ];
