@@ -14,6 +14,7 @@ import 'package:share_a_bite/login/RuOpLogin.dart';
 import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
 import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
+import 'package:share_a_bite/ngo_operator/menu.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
 import 'package:share_a_bite/onboarding/carousel.dart';
 import 'package:share_a_bite/recycling_unit/RuHome.dart';
@@ -162,6 +163,11 @@ appRoutes() => [
       GetPage(
         name: '/RestroMenu',
         page: () => const RestroMenu(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoOpMenu',
+        page: () => const NgoOpMenu(),
         middlewares: [MyMiddelware()],
       ),
     ];

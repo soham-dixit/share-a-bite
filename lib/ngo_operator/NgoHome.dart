@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,7 +77,7 @@ class _NgoHomeState extends State<NgoHome> {
                     ),
                     leading: IconButton(
                       onPressed: () {
-                        Get.toNamed('/menu');
+                        Get.toNamed('/NgoOpMenu');
                       },
                       icon: const Icon(
                         Icons.menu,
@@ -109,7 +110,7 @@ class _NgoHomeState extends State<NgoHome> {
                       ),
                       leading: IconButton(
                         onPressed: () {
-                          Get.toNamed('/menu');
+                          Get.toNamed('/NgoOpMenu');
                         },
                         icon: const Icon(
                           Icons.menu,
@@ -152,7 +153,7 @@ class _NgoHomeState extends State<NgoHome> {
                       ),
                       leading: IconButton(
                         onPressed: () {
-                          Get.toNamed('/menu');
+                          Get.toNamed('/NgoOpMenu');
                         },
                         icon: const Icon(
                           Icons.menu,

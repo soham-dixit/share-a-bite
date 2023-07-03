@@ -245,6 +245,7 @@ class _DistributeFormState extends State<DistributeForm> {
         'expiryTime': dateTimeTimestamp,
         'latitude': latitude,
         'longitude': longitude,
+        'status': 'pending',
       });
     }
     navigateToHome();
@@ -298,6 +299,8 @@ class _DistributeFormState extends State<DistributeForm> {
     }
     return true;
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
