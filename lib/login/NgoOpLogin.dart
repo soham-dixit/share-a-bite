@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,11 @@ class NgoOpLogin extends StatefulWidget {
 class _NgoOpLoginState extends State<NgoOpLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String? uid = '';
+  String? _currentAddress;
+  Position? _currentPosition;
+  String latitude = '';
+  String longitude = '';
 
   final formKey = GlobalKey<FormState>();
 
@@ -41,13 +47,19 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
     Get.toNamed('/NgoRegister');
   }
 
-  navigateToHome() async {
-    Get.offAllNamed('/NgoHome');
+  setUid() async {
     if (FirebaseAuth.instance.currentUser != null) {
       print(FirebaseAuth.instance.currentUser?.uid);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
+      uid = prefs.getString('uid');
+      print(uid);
+      _getCurrentPosition();
     }
+  }
+
+  navigateToHome() async {
+    Get.offAllNamed('/NgoHome');
   }
 
   NgoOpLogin(String email, String password) async {
@@ -58,7 +70,7 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
-      navigateToHome();
+      setUid();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email');
@@ -74,6 +86,45 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
         );
       }
     }
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      latitude = _currentPosition!.latitude.toString();
+      longitude = _currentPosition!.longitude.toString();
+      FirebaseFirestore.instance.collection('ngo').doc(uid).update({
+        'latitude': latitude,
+        'longitude': longitude,
+      });
+      navigateToHome();
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return false;
+    }
+    return true;
   }
 
   checkEmailExists(String email, String password) async {
