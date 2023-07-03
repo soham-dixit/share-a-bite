@@ -276,9 +276,11 @@ class _NgoRegister2State extends State<NgoRegister2> {
 
   final passwordValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter a password'),
-    MinLengthValidator(6, errorText: 'Password must be at least 6 digits long'),
-    PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-        errorText: 'Passwords must have at least one special character')
+    MinLengthValidator(6, errorText: 'Minimum 6 characters'),
+    PatternValidator(
+      r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])',
+      errorText: 'Letters, numbers, and at least one special character',
+    ),
   ]);
 
   final licenseValidator = MultiValidator([

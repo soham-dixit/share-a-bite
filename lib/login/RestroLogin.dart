@@ -27,10 +27,12 @@ class _RestroLoginState extends State<RestroLogin> {
   ]);
 
   final passwordValidator = MultiValidator([
-    RequiredValidator(errorText: 'Password is required'),
-    MinLengthValidator(6, errorText: 'Password must be at least 6 digits long'),
-    PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-        errorText: 'Password must have at least one special character')
+    RequiredValidator(errorText: 'Please enter a password'),
+    MinLengthValidator(6, errorText: 'Minimum 6 characters'),
+    PatternValidator(
+      r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])',
+      errorText: 'Letters, numbers, and at least one special character',
+    ),
   ]);
 
   List inputs = [];

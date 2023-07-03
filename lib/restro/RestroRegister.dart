@@ -276,9 +276,11 @@ class _RestroRegister2State extends State<RestroRegister2> {
 
   final passwordValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter a password'),
-    MinLengthValidator(6, errorText: 'Password must be at least 6 digits long'),
-    PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-        errorText: 'Passwords must have at least one special character')
+    MinLengthValidator(6, errorText: 'Minimum 6 characters'),
+    PatternValidator(
+      r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])',
+      errorText: 'Letters, numbers, and at least one special character',
+    ),
   ]);
 
   final licenseValidator = MultiValidator([
@@ -416,7 +418,7 @@ class _RestroRegister2State extends State<RestroRegister2> {
                       controller: _passwordController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.text,
                       obscureText: true,
                       style: const TextStyle(
                         fontFamily: 'Poppins',
