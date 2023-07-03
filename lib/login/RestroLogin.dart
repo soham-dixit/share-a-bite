@@ -146,7 +146,7 @@ class _RestroLoginState extends State<RestroLogin> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: _emailController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.name,
+                        keyboardType: TextInputType.text,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 18,
@@ -187,7 +187,7 @@ class _RestroLoginState extends State<RestroLogin> {
                           // fontWeight: FontWeight.bold,
                         ),
                         obscureText: true,
-                        // validator: passwordValidator,
+                        validator: passwordValidator,
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
                           label: Text('Password'),

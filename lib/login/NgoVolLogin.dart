@@ -28,10 +28,12 @@ class _NgoVolLoginState extends State<NgoVolLogin> {
   ]);
 
   final passwordValidator = MultiValidator([
-    RequiredValidator(errorText: 'Password is required'),
-    MinLengthValidator(6, errorText: 'Password must be at least 6 digits long'),
-    PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-        errorText: 'Password must have at least one special character')
+    RequiredValidator(errorText: 'Please enter a password'),
+    MinLengthValidator(6, errorText: 'Minimum 6 characters'),
+    PatternValidator(
+      r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])',
+      errorText: 'Letters, numbers, and at least one special character',
+    ),
   ]);
 
   NgoOperatorLogin() {
@@ -134,7 +136,7 @@ class _NgoVolLoginState extends State<NgoVolLogin> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: _emailController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.name,
+                        keyboardType: TextInputType.text,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 18,

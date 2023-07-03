@@ -285,8 +285,9 @@ class _NgoRegister2State extends State<NgoRegister2> {
 
   final licenseValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter a license number'),
-    PatternValidator(r'^[a-zA-Z0-9]+$',
-        errorText: 'Passwords must have at least one special character')
+    PatternValidator(r'^[a-zA-Z0-9]{8}$',
+        errorText:
+            'Must be 8 digits and a combination of alphabets and numbers')
   ]);
 
   final addressValidator = MultiValidator([
@@ -350,7 +351,7 @@ class _NgoRegister2State extends State<NgoRegister2> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: _licenseController,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.name,
+                      keyboardType: TextInputType.text,
                       style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18,

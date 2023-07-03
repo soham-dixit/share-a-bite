@@ -147,7 +147,7 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: _emailController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.name,
+                        keyboardType: TextInputType.text,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 18,
