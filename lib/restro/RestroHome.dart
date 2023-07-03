@@ -74,15 +74,15 @@ class _RestroHomeState extends State<RestroHome> {
                         ),
                       ],
                     ),
-                    leading: IconButton(
-                      onPressed: () {
-                        Get.toNamed('/menu');
-                      },
-                      icon: const Icon(
-                        Icons.menu,
-                        color: Colors.white,
-                      ),
-                    ),
+                    // leading: IconButton(
+                    //   onPressed: () {
+                    //     Get.toNamed('/RestroMenu');
+                    //   },
+                    //   icon: const Icon(
+                    //     Icons.menu,
+                    //     color: Colors.white,
+                    //   ),
+                    // ),
                   );
                 } else {
                   if (snapshot.hasData && snapshot.data!.exists) {
@@ -109,7 +109,7 @@ class _RestroHomeState extends State<RestroHome> {
                       ),
                       leading: IconButton(
                         onPressed: () {
-                          Get.toNamed('/menu');
+                          Get.toNamed('/RestroMenu');
                         },
                         icon: const Icon(
                           Icons.menu,
