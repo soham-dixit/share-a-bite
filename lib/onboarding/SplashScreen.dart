@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (uid == null) {
       // UID is not set, navigate to the carousel page
-      Get.toNamed('/carousel');
+      Get.offNamed('/carousel');
     } else {
       // UID is set, check if it exists in the 'restaurants' collection
       DocumentSnapshot restaurantSnapshot = await FirebaseFirestore.instance
@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
 
       if (restaurantSnapshot.exists) {
         // UID exists in the 'restaurants' collection, navigate to the restaurants page
-        Get.toNamed('/RestroHome');
+        Get.offNamed('/RestroHome');
       } else {
         // UID doesn't exist in the 'restaurants' collection, check if it exists in the 'ngo' collection
         DocumentSnapshot ngoSnapshot =
@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
 
         if (ngoSnapshot.exists) {
           // UID exists in the 'ngo' collection, navigate to the ngo page
-          Get.toNamed('/NgoHome');
+          Get.offNamed('/NgoHome');
         } else {
           // UID doesn't exist in the 'ngo' collection, check if it exists in the 'grocery_stores' collection
           DocumentSnapshot grocerySnapshot = await FirebaseFirestore.instance
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
               .get();
           if (grocerySnapshot.exists) {
             // UID exists in the 'grocery_stores' collection, navigate to the ngo page
-            Get.toNamed('/GroceryHome');
+            Get.offNamed('/GroceryHome');
           } else {
             // UID doesn't exist in the 'grocery_stores' collection, check if it exists in the 'recycling_units' collection
             DocumentSnapshot ruSnapshot = await FirebaseFirestore.instance
@@ -80,9 +80,9 @@ class _SplashScreenState extends State<SplashScreen>
                 .get();
             if (ruSnapshot.exists) {
               // UID exists in the 'recycling_units' collection, navigate to the recycling unit page
-              Get.toNamed('/RuHome');
+              Get.offNamed('/RuHome');
             } else {
-              Get.toNamed('/carousel');
+              Get.offNamed('/carousel');
             }
           }
         }
