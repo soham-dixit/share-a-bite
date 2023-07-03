@@ -242,8 +242,7 @@ class _DistributeFormState extends State<DistributeForm> {
         'quantity': _quantityController.text,
         'shelfLife': _shelfLifeController.text,
         'photo': imageUrl,
-        'date': selectedTimestamp,
-        'time': dateTimeTimestamp,
+        'expiryTime': dateTimeTimestamp,
         'latitude': latitude,
         'longitude': longitude,
       });
