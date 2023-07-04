@@ -110,6 +110,7 @@ appRoutes() => [
         ),
         middlewares: [MyMiddelware()],
       ),
+
       GetPage(
         name: '/NgoRegister',
         page: () => const RegisterNgo(),
@@ -130,12 +131,22 @@ appRoutes() => [
         page: () => const GroceryRegister(),
         middlewares: [MyMiddelware()],
       ),
+
       GetPage(
         name: '/GroceryVerify',
-        page: () => const GroceryVerify(),
+        page: () => const GroceryVerify(
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          license: '',
+          password: '',
+        ),
+        transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
-      GetPage(
+
+  GetPage(
         name: '/GroceryHome',
         page: () => const GroceryHome(),
         middlewares: [MyMiddelware()],
@@ -145,11 +156,21 @@ appRoutes() => [
         page: () => const RuRegister(),
         middlewares: [MyMiddelware()],
       ),
+
       GetPage(
         name: '/RuVerify',
-        page: () => const RuVerify(),
+        page: () => const RuVerify(
+          name: '',
+          email: '',
+          phone: '',
+          address: '',
+          license: '',
+          password: '',
+        ),
+        transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
+
       GetPage(
         name: '/RuHome',
         page: () => const RuHome(),
