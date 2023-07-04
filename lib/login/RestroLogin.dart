@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/restro/RestroRegister.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
@@ -18,7 +19,11 @@ class RestroLogin extends StatefulWidget {
 class _RestroLoginState extends State<RestroLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  String? uid = '';
+  String? _currentAddress;
+  Position? _currentPosition;
+  String latitude = '';
+  String longitude = '';
   final formKey = GlobalKey<FormState>();
 
   final emailValidator = MultiValidator([
@@ -41,13 +46,58 @@ class _RestroLoginState extends State<RestroLogin> {
     Get.to(const RestroRegister());
   }
 
-  navigateToHome() async {
-    Get.offAllNamed('/RestroHome');
+  setUid() async {
     if (FirebaseAuth.instance.currentUser != null) {
       print(FirebaseAuth.instance.currentUser?.uid);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
+      uid = prefs.getString('uid');
+      print(uid);
+      _getCurrentPosition();
     }
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      latitude = _currentPosition!.latitude.toString();
+      longitude = _currentPosition!.longitude.toString();
+      FirebaseFirestore.instance.collection('restaurants').doc(uid).update({
+        'latitude': latitude,
+        'longitude': longitude,
+      });
+      navigateToHome();
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return false;
+    }
+    return true;
+  }
+
+  navigateToHome() async {
+    Get.offAllNamed('/RestroHome');
   }
 
   restroLogin(String email, String password) async {
@@ -58,7 +108,7 @@ class _RestroLoginState extends State<RestroLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
-      navigateToHome();
+      setUid();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');

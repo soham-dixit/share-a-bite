@@ -15,6 +15,7 @@ import 'package:share_a_bite/login/RuOpLogin.dart';
 import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
 import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
+import 'package:share_a_bite/ngo_operator/PendingReq.dart';
 import 'package:share_a_bite/ngo_operator/menu.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
 import 'package:share_a_bite/onboarding/carousel.dart';
@@ -185,6 +186,16 @@ appRoutes() => [
       GetPage(
         name: '/GroceryMenu',
         page: () => const GroceryMenu(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoOpMenu',
+        page: () => const NgoOpMenu(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/NgoPendingReq',
+        page: () => const PendingReq(),
         middlewares: [MyMiddelware()],
       ),
     ];
