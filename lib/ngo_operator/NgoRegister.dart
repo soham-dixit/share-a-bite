@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -24,6 +25,7 @@ final TextEditingController _passwordController = TextEditingController();
 
 class _RegisterNgoState extends State<RegisterNgo> {
   final formKey = GlobalKey<FormState>();
+  bool already_exists = false;
 
   final emailValidator = MultiValidator([
     EmailValidator(errorText: 'Please enter a valid email ID'),
@@ -39,6 +41,26 @@ class _RegisterNgoState extends State<RegisterNgo> {
   final nameValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter a business name'),
   ]);
+
+  check_if_already_exists() async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await databaseReference.once();
+    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+    if (databaseData['ngo'] != null) {
+      dynamic keys_list = databaseData['ngo'].keys.toList();
+      for (int i = 0; i < keys_list.length; i++) {
+        if (databaseData['ngo'][keys_list[i]]
+                .containsValue(_contactController.text) ||
+            databaseData['ngo'][keys_list[i]]
+                .containsValue(_emailController.text)) {
+          already_exists = true;
+        }
+      }
+    }
+    already_exists
+        ? Get.snackbar('Error', 'Email or phone is already registered')
+        : null;
+  }
 
   navigateToLogin() {
     Get.back();
@@ -203,14 +225,16 @@ class _RegisterNgoState extends State<RegisterNgo> {
                           //   _emailController.text,
                           //   _passwordController.text
                           // ];
-                          print(_nameController.text.toString());
-                          print(_emailController.text.toString());
-                          print(_contactController.text.toString());
-                          Get.to(() => NgoRegister2(
-                                name: _nameController.text.toString(),
-                                email: _emailController.text.toString(),
-                                contact: _contactController.text.toString(),
-                              ));
+                          check_if_already_exists().whenComplete(() {
+                            already_exists
+                                ? null
+                                : Get.to(() => NgoRegister2(
+                                      name: _nameController.text.toString(),
+                                      email: _emailController.text.toString(),
+                                      contact:
+                                          _contactController.text.toString(),
+                                    ));
+                          });
                         }
                       },
                     ),

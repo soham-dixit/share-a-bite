@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -63,12 +64,16 @@ class _RestroLoginState extends State<RestroLogin> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
-      latitude = _currentPosition!.latitude.toString();
-      longitude = _currentPosition!.longitude.toString();
-      FirebaseFirestore.instance.collection('restaurants').doc(uid).update({
-        'latitude': latitude,
-        'longitude': longitude,
-      });
+      // latitude = _currentPosition!.latitude.toString();
+      // longitude = _currentPosition!.longitude.toString();
+      final intLatitude = _currentPosition!.latitude.toDouble();
+      final intLongitude = _currentPosition!.longitude.toDouble();
+      // store latitude and longitude in realtime database
+      final databaseReference = FirebaseDatabase.instance.ref();
+      databaseReference
+          .child('restaurants')
+          .child(uid!)
+          .update({'latitude': intLatitude, 'longitude': intLongitude});
       navigateToHome();
     }).catchError((e) {
       debugPrint(e);
@@ -105,13 +110,13 @@ class _RestroLoginState extends State<RestroLogin> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       Get.snackbar(
-        'Login Successful!',
+        'Login successful!',
         'You have been logged in successfully',
       );
       setUid();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        print('No restaurant found for that email.');
         Get.snackbar(
           'Error!',
           'No user found for this email',
@@ -126,16 +131,24 @@ class _RestroLoginState extends State<RestroLogin> {
     }
   }
 
-  checkEmailExists(String email, String password) async {
-    final restaurantsRef = FirebaseFirestore.instance.collection('restaurants');
-    final querySnapshot =
-        await restaurantsRef.where('email', isEqualTo: email).get();
-    if (querySnapshot.docs.isEmpty) {
-      Get.snackbar("Error!", "Please register your account");
-    } else {
-      restroLogin(email, password);
-    }
-  }
+  // checkEmailExists(String email, String password) async {
+  //   final databaseReference = FirebaseDatabase.instance.ref();
+  //   DatabaseEvent event = await databaseReference.once();
+  //   Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+  //   if (databaseData['restaurants'] != null) {
+  //     dynamic keys_list = databaseData['restaurants'].keys.toList();
+  //     for (int i = 0; i < keys_list.length; i++) {
+  //       if (databaseData['restaurants'][keys_list[i]]
+  //           .containsValue(_emailController.text)) {
+  //         restroLogin(email, password);
+  //       }
+  //     }
+  //     Get.snackbar(
+  //       'Error!',
+  //       'No restaurant found for this email',
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -269,10 +282,10 @@ class _RestroLoginState extends State<RestroLogin> {
                             //   _emailController.text,
                             //   _passwordController.text
                             // ];
-                            // restroLogin(_emailController.text,
-                            //     _passwordController.text);
-                            checkEmailExists(_emailController.text,
+                            restroLogin(_emailController.text,
                                 _passwordController.text);
+                            // checkEmailExists(_emailController.text,
+                            //     _passwordController.text);
                             // await FirebaseAuth.instance.signOut();
                           }
                         },

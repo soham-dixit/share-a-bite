@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/recycling_unit/RuRegister.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
@@ -18,6 +20,10 @@ class RuOpLogin extends StatefulWidget {
 class _RuOpLoginState extends State<RuOpLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  Position? _currentPosition;
+  String latitude = '';
+  String longitude = '';
+  String? uid = '';
 
   final formKey = GlobalKey<FormState>();
 
@@ -34,6 +40,17 @@ class _RuOpLoginState extends State<RuOpLogin> {
   ]);
 
   List inputs = [];
+
+  setUid() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser?.uid);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
+      uid = prefs.getString('uid');
+      print(uid);
+      _getCurrentPosition();
+    }
+  }
 
   navigateToRegister() {
     Get.to(const RuRegister());
@@ -56,7 +73,7 @@ class _RuOpLoginState extends State<RuOpLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
-      navigateToHome();
+      setUid();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
@@ -74,15 +91,47 @@ class _RuOpLoginState extends State<RuOpLogin> {
     }
   }
 
-  checkEmailExists(String email, String password) async {
-    final restaurantsRef = FirebaseFirestore.instance.collection('ru');
-    final querySnapshot =
-    await restaurantsRef.where('email', isEqualTo: email).get();
-    if (querySnapshot.docs.isEmpty) {
-      Get.snackbar("Error!", "Please register your account");
-    } else {
-      ruLogin(email, password);
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      // latitude = _currentPosition!.latitude.toString();
+      // longitude = _currentPosition!.longitude.toString();
+      final intLatitude = _currentPosition!.latitude.toDouble();
+      final intLongitude = _currentPosition!.longitude.toDouble();
+      // store latitude and longitude in realtime database
+      final databaseReference = FirebaseDatabase.instance.ref();
+      databaseReference
+          .child('recycling_units')
+          .child(uid!)
+          .update({'latitude': intLatitude, 'longitude': intLongitude});
+      navigateToHome();
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return false;
     }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -90,7 +139,8 @@ class _RuOpLoginState extends State<RuOpLogin> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: SingleChildScrollView( // Added SingleChildScrollView here
+        child: SingleChildScrollView(
+          // Added SingleChildScrollView here
           child: Padding(
             padding: EdgeInsets.symmetric(
               vertical: MediaQuery.of(context).size.height / 10,
@@ -143,8 +193,7 @@ class _RuOpLoginState extends State<RuOpLogin> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextFormField(
-                          autovalidateMode:
-                          AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: _emailController,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.name,
@@ -182,8 +231,7 @@ class _RuOpLoginState extends State<RuOpLogin> {
                         ),
                         TextFormField(
                           controller: _passwordController,
-                          autovalidateMode:
-                          AutovalidateMode.onUserInteraction,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(
@@ -223,7 +271,7 @@ class _RuOpLoginState extends State<RuOpLogin> {
                           initialTitle: 'Login',
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
-                              checkEmailExists(
+                              ruLogin(
                                 _emailController.text,
                                 _passwordController.text,
                               );

@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -38,6 +38,7 @@ class _DistributeFormState extends State<DistributeForm> {
   Position? _currentPosition;
   String latitude = '';
   String longitude = '';
+  var newChildKey = '';
 
   final locationValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter your location'),
@@ -65,8 +66,8 @@ class _DistributeFormState extends State<DistributeForm> {
   ];
 
   Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-    if (!hasPermission) return;
+    // final hasPermission = await _handleLocationPermission();
+    // if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
@@ -208,10 +209,10 @@ class _DistributeFormState extends State<DistributeForm> {
 
   _submitForm() async {
     if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
+      print('Form is valid');
+      // formKey.currentState!.save();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       uid = prefs.getString('uid');
-      await uploadImage();
       Timestamp selectedTimestamp = Timestamp.fromDate(selectedDate!);
       DateTime dateTime = DateTime(
         selectedDate!.year,
@@ -221,37 +222,46 @@ class _DistributeFormState extends State<DistributeForm> {
         selectedTime!.minute,
       );
       Timestamp dateTimeTimestamp = Timestamp.fromDate(dateTime);
-      String requestId = FirebaseFirestore.instance
-          .collection('restaurants')
-          .doc(uid)
-          .collection('distribution')
-          .doc()
-          .id;
 
-      FirebaseFirestore.instance
-          .collection('restaurants')
-          .doc(uid)
-          .collection('distribution')
-          .doc('pending')
-          .collection(requestId) // Use the generated document ID
-          .doc('request')
-          .set({
+      final intLatitude = _currentPosition!.latitude.toDouble();
+      final intLongitude = _currentPosition!.longitude.toDouble();
+
+      final databaseReference = FirebaseDatabase.instance.ref();
+      final newChildRef = databaseReference
+          .child("restaurants")
+          .child(uid!)
+          .child('distribution')
+          .child('pending')
+          .push();
+
+      newChildKey = newChildRef.key!;
+      await uploadImage();
+
+      newChildRef.set({
         'address': _locationController.text,
         'foodType': selectedValue.toString(),
         'foodName': _foodNameController.text,
         'quantity': _quantityController.text,
         'shelfLife': _shelfLifeController.text,
         'photo': imageUrl,
-        'expiryTime': dateTimeTimestamp,
-        'latitude': latitude,
-        'longitude': longitude,
+        'latitude': intLatitude,
+        'longitude': intLongitude,
         'status': 'pending',
       });
+
+      print('New child key: $newChildKey');
     }
+
     navigateToHome();
   }
 
-  navigateToHome() async {
+  navigateToHome() {
+    // clear all the text fields
+    _locationController.clear();
+    _foodNameController.clear();
+    _quantityController.clear();
+    _shelfLifeController.clear();
+
     Get.back();
     Get.snackbar(
       'Success!',
@@ -262,7 +272,7 @@ class _DistributeFormState extends State<DistributeForm> {
   uploadImage() async {
     if (image != null) {
       final Reference firebaseStorageRef = FirebaseStorage.instance.ref().child(
-          'images/restaurants/distribution/$uid/${DateTime.now().millisecondsSinceEpoch}');
+          'images/restaurants/distribution/pending/$newChildKey/${DateTime.now().millisecondsSinceEpoch}');
       final UploadTask task = firebaseStorageRef.putFile(image!);
 
       // Wait for the upload task to complete and get the download URL
@@ -299,8 +309,6 @@ class _DistributeFormState extends State<DistributeForm> {
     }
     return true;
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -566,7 +574,7 @@ class _DistributeFormState extends State<DistributeForm> {
                                       time.minute,
                                     );
                                     _shelfLifeController.text =
-                                        DateFormat("dd-MM-yyyy, hh:mm a")
+                                        DateFormat("hh:mm a, dd-MM-yyyy")
                                             .format(dateTime);
                                     // remove focus
                                     FocusScope.of(context)

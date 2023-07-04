@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -16,14 +17,18 @@ class GroceryMenu extends StatefulWidget {
 }
 
 class _GroceryMenuState extends State<GroceryMenu> {
-  Future<DocumentSnapshot> getUserDetails() async {
+  Future<DataSnapshot> getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
 
     if (uid != null && uid.isNotEmpty) {
-      final DocumentSnapshot snapshot =
-          await FirebaseFirestore.instance.collection('grocery').doc(uid).get();
-      return snapshot;
+      DatabaseReference databaseRef = FirebaseDatabase.instance.ref();
+
+      // Retrieve the snapshot of the realtime database using uid
+      DatabaseEvent snapshot =
+          await databaseRef.child('grocery').child(uid).once();
+
+      return snapshot.snapshot;
     } else {
       throw Exception('Invalid UID');
     }
@@ -86,11 +91,11 @@ class _GroceryMenuState extends State<GroceryMenu> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FutureBuilder<DocumentSnapshot>(
+                    FutureBuilder<DataSnapshot>(
                         future: getUserDetails(),
                         initialData: null,
                         builder: (BuildContext context,
-                            AsyncSnapshot<DocumentSnapshot> snapshot) {
+                            AsyncSnapshot<DataSnapshot> snapshot) {
                           if (snapshot.connectionState ==
                                   ConnectionState.waiting ||
                               snapshot.data == null) {
@@ -132,9 +137,10 @@ class _GroceryMenuState extends State<GroceryMenu> {
                             );
                           } else {
                             if (snapshot.hasData && snapshot.data!.exists) {
-                              String name = snapshot.data!.get('name');
-                              String phoneNumber = snapshot.data!.get('phone');
-                              String email = snapshot.data!.get('email');
+                              dynamic data = snapshot.data!.value;
+                              String name = data['name'];
+                              String phoneNumber = data['phone'];
+                              String email = data['email'];
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

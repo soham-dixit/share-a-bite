@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,12 +20,12 @@ class GroceryVerify extends StatefulWidget {
 
   const GroceryVerify(
       {super.key,
-        required this.name,
-        required this.email,
-        required this.address,
-        required this.license,
-        required this.password,
-        required this.phone});
+      required this.name,
+      required this.email,
+      required this.address,
+      required this.license,
+      required this.password,
+      required this.phone});
 
   @override
   State<GroceryVerify> createState() => _GroceryVerifyState();
@@ -171,14 +172,14 @@ class _GroceryVerifyState extends State<GroceryVerify> {
                     bool result = await verifyCodeNew(code);
                     if (result) {
                       Get.to(() => GroceryVerify2(
-                        // send all the data to the next screen
-                        name: widget.name,
-                        email: widget.email,
-                        address: widget.address,
-                        license: widget.license,
-                        password: widget.password,
-                        phone: widget.phone,
-                      ));
+                            // send all the data to the next screen
+                            name: widget.name,
+                            email: widget.email,
+                            address: widget.address,
+                            license: widget.license,
+                            password: widget.password,
+                            phone: widget.phone,
+                          ));
                     } else {
                       Get.snackbar(
                           "Error", "Please verify your mobile number!");
@@ -202,12 +203,12 @@ class GroceryVerify2 extends StatefulWidget {
 
   const GroceryVerify2(
       {super.key,
-        required this.name,
-        required this.email,
-        required this.address,
-        required this.license,
-        required this.password,
-        required this.phone});
+      required this.name,
+      required this.email,
+      required this.address,
+      required this.license,
+      required this.password,
+      required this.phone});
 
   @override
   State<GroceryVerify2> createState() => _GroceryVerify2State();
@@ -228,37 +229,28 @@ class _GroceryVerify2State extends State<GroceryVerify2> {
   }
 
   registerGrocery() async {
-    Map<String, dynamic> data = {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+            email: widget.email, password: widget.password);
+
+    saveInfo();
+  }
+
+  saveInfo() async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User user = await auth.currentUser!;
+    final uid = user.uid;
+    databaseReference.child("grocery").child(uid).set({
       'name': widget.name,
       'email': widget.email,
       'address': widget.address,
       'license': widget.license,
-      // 'password': widget.password,
       'phone': widget.phone,
-    };
-
-    try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: widget.email,
-        password: widget.password,
-      );
-      await FirebaseFirestore.instance
-          .collection('grocery')
-          .doc(userCredential.user!.uid)
-          .set(data);
-      Get.snackbar('Success!', 'Grocery store registered successfully');
-      Get.offAll(() => const GroceryLogin());
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-        Get.snackbar('Error', 'The account already exists for this email');
-      }
-    } catch (e) {
-      print(e);
-    }
+    }).whenComplete(() {
+      Get.snackbar('Success', 'Registered Successfully');
+      Get.offAllNamed('/GroceryLogin');
+    });
   }
 
   @override
