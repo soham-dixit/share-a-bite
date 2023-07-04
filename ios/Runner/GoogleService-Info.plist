@@ -32,5 +32,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:804050289685:ios:1c7f8dc29b9e24d2a8ba1c</string>
+	<key>DATABASE_URL</key>
+	<string>https://share-a-bite-sih23-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

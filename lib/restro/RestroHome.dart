@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -6,7 +6,7 @@ import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RestroHome extends StatefulWidget {
-  const RestroHome({super.key});
+  const RestroHome({Key? key}) : super(key: key);
 
   @override
   State<RestroHome> createState() => _RestroHomeState();
@@ -16,16 +16,18 @@ class _RestroHomeState extends State<RestroHome> {
   String restroName = '';
   String uid = '';
 
-  Future<DocumentSnapshot> getUserDetails() async {
+  Future<DataSnapshot> getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
 
     if (uid != null && uid.isNotEmpty) {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('restaurants')
-          .doc(uid)
-          .get();
-      return snapshot;
+      DatabaseReference databaseRef = FirebaseDatabase.instance.ref();
+
+      // Retrieve the snapshot of the realtime database using uid
+      DatabaseEvent snapshot =
+          await databaseRef.child('restaurants').child(uid).once();
+
+      return snapshot.snapshot;
     } else {
       throw Exception('Invalid UID');
     }
@@ -51,10 +53,10 @@ class _RestroHomeState extends State<RestroHome> {
           ),
           child: Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: FutureBuilder<DocumentSnapshot>(
+            child: FutureBuilder<DataSnapshot>(
               future: getUserDetails(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+              builder:
+                  (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return AppBar(
                     automaticallyImplyLeading: false,
@@ -85,9 +87,10 @@ class _RestroHomeState extends State<RestroHome> {
                     ),
                   );
                 } else {
-                  if (snapshot.hasData && snapshot.data!.exists) {
-                    String name = snapshot.data!.get('name');
-                    String phoneNumber = snapshot.data!.get('phone');
+                  if (snapshot.hasData && snapshot.data!.value != null) {
+                    dynamic data = snapshot.data!.value;
+                    String name = data['name'];
+                    String phoneNumber = data['phone'];
 
                     return AppBar(
                       automaticallyImplyLeading: false,

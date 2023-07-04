@@ -52,6 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '804050289685',
     projectId: 'share-a-bite-sih23',
     authDomain: 'share-a-bite-sih23.firebaseapp.com',
+    databaseURL: 'https://share-a-bite-sih23-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'share-a-bite-sih23.appspot.com',
     measurementId: 'G-4QY1V9YGH2',
   );
@@ -61,6 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:804050289685:android:cefc643490570ac8a8ba1c',
     messagingSenderId: '804050289685',
     projectId: 'share-a-bite-sih23',
+    databaseURL: 'https://share-a-bite-sih23-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'share-a-bite-sih23.appspot.com',
   );
 
@@ -69,7 +71,9 @@ class DefaultFirebaseOptions {
     appId: '1:804050289685:ios:1c7f8dc29b9e24d2a8ba1c',
     messagingSenderId: '804050289685',
     projectId: 'share-a-bite-sih23',
+    databaseURL: 'https://share-a-bite-sih23-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'share-a-bite-sih23.appspot.com',
+    androidClientId: '804050289685-ms01mfet8g86btjmb73gaeeo0169m3uu.apps.googleusercontent.com',
     iosClientId: '804050289685-9a2n4bp8doqpu9n77hjsfu28rftmm8bs.apps.googleusercontent.com',
     iosBundleId: 'com.example.shareABite',
   );

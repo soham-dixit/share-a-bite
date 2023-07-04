@@ -1,4 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +40,8 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  _navigate() async {
+  void _navigate() async {
+    DatabaseReference databaseRef = FirebaseDatabase.instance.reference();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
 
@@ -46,46 +49,13 @@ class _SplashScreenState extends State<SplashScreen>
       // UID is not set, navigate to the carousel page
       Get.offNamed('/carousel');
     } else {
-      // UID is set, check if it exists in the 'restaurants' collection
-      DocumentSnapshot restaurantSnapshot = await FirebaseFirestore.instance
-          .collection('restaurants')
-          .doc(uid)
-          .get();
+      DatabaseEvent snapshot =
+          await databaseRef.child('restaurants').child(uid).once();
 
-      if (restaurantSnapshot.exists) {
-        // UID exists in the 'restaurants' collection, navigate to the restaurants page
+      if (snapshot.snapshot.value != null) {
         Get.offNamed('/RestroHome');
       } else {
-        // UID doesn't exist in the 'restaurants' collection, check if it exists in the 'ngo' collection
-        DocumentSnapshot ngoSnapshot =
-            await FirebaseFirestore.instance.collection('ngo').doc(uid).get();
-
-        if (ngoSnapshot.exists) {
-          // UID exists in the 'ngo' collection, navigate to the ngo page
-          Get.offNamed('/NgoHome');
-        } else {
-          // UID doesn't exist in the 'ngo' collection, check if it exists in the 'grocery_stores' collection
-          DocumentSnapshot grocerySnapshot = await FirebaseFirestore.instance
-              .collection('grocery')
-              .doc(uid)
-              .get();
-          if (grocerySnapshot.exists) {
-            // UID exists in the 'grocery_stores' collection, navigate to the ngo page
-            Get.offNamed('/GroceryHome');
-          } else {
-            // UID doesn't exist in the 'grocery_stores' collection, check if it exists in the 'recycling_units' collection
-            DocumentSnapshot ruSnapshot = await FirebaseFirestore.instance
-                .collection('recycling_units')
-                .doc(uid)
-                .get();
-            if (ruSnapshot.exists) {
-              // UID exists in the 'recycling_units' collection, navigate to the recycling unit page
-              Get.offNamed('/RuHome');
-            } else {
-              Get.offNamed('/carousel');
-            }
-          }
-        }
+        Get.offNamed('/carousel');
       }
     }
   }

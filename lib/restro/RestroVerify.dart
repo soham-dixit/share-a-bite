@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -215,6 +216,7 @@ class RestroVerify2 extends StatefulWidget {
 
 class _RestroVerify2State extends State<RestroVerify2> {
   String code = "";
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   sendCodeAgain() {}
 
@@ -228,37 +230,31 @@ class _RestroVerify2State extends State<RestroVerify2> {
   }
 
   registerRestro() async {
-    Map<String, dynamic> data = {
+    UserCredential userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+            email: widget.email, password: widget.password);
+
+    saveInfo();
+  }
+
+  saveInfo() async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User user = await auth.currentUser!;
+    final uid = user.uid;
+    databaseReference.child("restaurants").child(uid).set({
       'name': widget.name,
       'email': widget.email,
       'address': widget.address,
       'license': widget.license,
-      // 'password': widget.password,
       'phone': widget.phone,
-    };
-
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: widget.email,
-        password: widget.password,
+    }).whenComplete(() {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => RestroLogin(),
+        ),
       );
-      await FirebaseFirestore.instance
-          .collection('restaurants')
-          .doc(userCredential.user!.uid)
-          .set(data);
-      Get.snackbar('Success!', 'Restaurant registered successfully');
-      Get.offAll(() => const RestroLogin());
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-        Get.snackbar('Error', 'The account already exists for this email');
-      }
-    } catch (e) {
-      print(e);
-    }
+    });
   }
 
   @override
