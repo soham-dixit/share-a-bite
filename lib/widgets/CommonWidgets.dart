@@ -93,3 +93,164 @@ class _MainOrangeBorderButtonState extends State<MainOrangeBorderButton> {
     );
   }
 }
+
+class ReqCard extends StatefulWidget {
+  final VoidCallback onPress;
+
+  final String restroName;
+  final String foodName;
+  final String foodType;
+  final String shelfLife;
+  // final String jobCreatedTime;
+  final String status;
+  const ReqCard(
+      {Key? key,
+      required this.restroName,
+      required this.foodName,
+      required this.foodType,
+      required this.shelfLife,
+      required this.status,
+      required this.onPress})
+      : super(key: key);
+
+  @override
+  State<ReqCard> createState() => _ReqCardState();
+}
+
+//display vehicle number, customer name, assigned employee, job created date and time on left side one below the other and status on top right. if status is ongoing, display text in blue, if status is ready, display text in green, if status is created, display text in yellow, if status is payment due, display text in red
+class _ReqCardState extends State<ReqCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+      child: GestureDetector(
+        onTap: widget.onPress,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          elevation: 1, // Add shadow
+          child: Container(
+            width: 358.0, // Set width
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Vehicle number
+                    Text(
+                      widget.restroName,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    // Customer name
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      widget.foodName,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    // Assigned employee
+                    Row(children: [
+                      const Icon(
+                        Icons.person_2_outlined,
+                        size: 12,
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        widget.foodType,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(20, 20, 20, 0.6),
+                        ),
+                      ),
+                    ]),
+                    SizedBox(
+                      height: 2,
+                    ),
+
+                    // Job created date
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_today_outlined,
+                          size: 12,
+                        ),
+                        SizedBox(
+                          width: 4,
+                        ),
+
+                        // Job created time
+                        Text(
+                          widget.shelfLife,
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 8,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(20, 20, 20, 0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(
+                          8, 12, 8, 12), // Adjust padding as needed
+                      decoration: BoxDecoration(
+                        color: widget.status == 'Pending'
+                            ? Color.fromRGBO(219, 0, 0, 0.078)
+                            : widget.status == 'Accepted'
+                                ? Color.fromRGBO(89, 195, 106, 0.08)
+                                : widget.status == 'Completed'
+                                    ? Color.fromRGBO(244, 73, 15, 0.08)
+                                    : Color.fromRGBO(255, 204, 0, 0.08),
+
+                        borderRadius:
+                            BorderRadius.circular(8), // Radius of the box
+                      ),
+                      child: Text(
+                        widget.status,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 9,
+                          // fontWeight: FontWeight.bold,
+                          color: widget.status == 'Pending'
+                              ? Color.fromRGBO(255, 0, 0, 1)
+                              : widget.status == 'Accepted'
+                                  ? Color.fromRGBO(89, 195, 106, 0.08)
+                                  : widget.status == 'Completed'
+                                      ? Color.fromRGBO(244, 73, 15, 0.08)
+                                      : Color.fromRGBO(244, 73, 15, 0.08),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

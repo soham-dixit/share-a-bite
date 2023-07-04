@@ -241,7 +241,7 @@ class _GroceryMenuState extends State<GroceryMenu> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text(
-                      'Distribute expired food',
+                      'Distribute goods',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

@@ -206,7 +206,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                                 height: 5,
                               ),
                               const Text(
-                                'Distribute Expired Products',
+                                'Distribute Goods',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Poppins',

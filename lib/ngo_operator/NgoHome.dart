@@ -222,7 +222,9 @@ class _NgoHomeState extends State<NgoHome> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/NgoPendingReq');
+                      },
                       child: Container(
                         width: 150,
                         height: 150,
