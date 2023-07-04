@@ -9,7 +9,7 @@ import 'package:share_a_bite/login/MainLogin.dart';
 import 'package:share_a_bite/login/NgoOpLogin.dart';
 import 'package:share_a_bite/login/NgoVolLogin.dart';
 import 'package:share_a_bite/login/RestroLogin.dart';
-import 'package:share_a_bite/login/RuDeliverLogin.dart';
+import 'package:share_a_bite/login/RuDeliveryLogin.dart';
 import 'package:share_a_bite/login/RuOpLogin.dart';
 import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
@@ -110,7 +110,6 @@ appRoutes() => [
         ),
         middlewares: [MyMiddelware()],
       ),
-
       GetPage(
         name: '/NgoRegister',
         page: () => const RegisterNgo(),
@@ -131,7 +130,6 @@ appRoutes() => [
         page: () => const GroceryRegister(),
         middlewares: [MyMiddelware()],
       ),
-
       GetPage(
         name: '/GroceryVerify',
         page: () => const GroceryVerify(
@@ -145,8 +143,7 @@ appRoutes() => [
         transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
-
-  GetPage(
+      GetPage(
         name: '/GroceryHome',
         page: () => const GroceryHome(),
         middlewares: [MyMiddelware()],
@@ -156,7 +153,6 @@ appRoutes() => [
         page: () => const RuRegister(),
         middlewares: [MyMiddelware()],
       ),
-
       GetPage(
         name: '/RuVerify',
         page: () => const RuVerify(
@@ -170,7 +166,6 @@ appRoutes() => [
         transition: Transition.zoom,
         middlewares: [MyMiddelware()],
       ),
-
       GetPage(
         name: '/RuHome',
         page: () => const RuHome(),

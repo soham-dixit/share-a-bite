@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/login/GroceryLogin.dart';
 import 'package:share_a_bite/login/GuestLogin.dart';
 import 'package:share_a_bite/login/NgoVolLogin.dart';
 import 'package:share_a_bite/login/RestroLogin.dart';
-import 'package:share_a_bite/login/RuDeliverLogin.dart';
+import 'package:share_a_bite/login/RuDeliveryLogin.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 
 class MainLogin extends StatefulWidget {
