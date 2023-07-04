@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
         } else {
           // UID doesn't exist in the 'ngo' collection, check if it exists in the 'grocery_stores' collection
           DocumentSnapshot grocerySnapshot = await FirebaseFirestore.instance
-              .collection('grocery_stores')
+              .collection('grocery')
               .doc(uid)
               .get();
           if (grocerySnapshot.exists) {

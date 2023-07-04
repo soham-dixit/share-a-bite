@@ -21,10 +21,8 @@ class _GroceryHomeState extends State<GroceryHome> {
     String? uid = prefs.getString('uid');
 
     if (uid != null && uid.isNotEmpty) {
-      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('grocery')
-          .doc(uid)
-          .get();
+      final DocumentSnapshot snapshot =
+          await FirebaseFirestore.instance.collection('grocery').doc(uid).get();
       return snapshot;
     } else {
       throw Exception('Invalid UID');
@@ -37,7 +35,7 @@ class _GroceryHomeState extends State<GroceryHome> {
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize:
-        Size.fromHeight(MediaQuery.of(context).size.height * 0.120),
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.120),
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -76,7 +74,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                     ),
                     leading: IconButton(
                       onPressed: () {
-                        Get.toNamed('/menu');
+                        Get.toNamed('/GroceryMenu');
                       },
                       icon: const Icon(
                         Icons.menu,
@@ -109,7 +107,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                       ),
                       leading: IconButton(
                         onPressed: () {
-                          Get.toNamed('/menu');
+                          Get.toNamed('/GroceryMenu');
                         },
                         icon: const Icon(
                           Icons.menu,
@@ -152,7 +150,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                       ),
                       leading: IconButton(
                         onPressed: () {
-                          Get.toNamed('/menu');
+                          Get.toNamed('/GroceryMenu');
                         },
                         icon: const Icon(
                           Icons.menu,
@@ -208,7 +206,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                                 height: 5,
                               ),
                               const Text(
-                                'Distribute Excess Products',
+                                'Distribute Expired Products',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Poppins',

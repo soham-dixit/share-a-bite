@@ -8,22 +8,21 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NgoOpMenu extends StatefulWidget {
-  const NgoOpMenu({super.key});
+class GroceryMenu extends StatefulWidget {
+  const GroceryMenu({super.key});
 
   @override
-  State<NgoOpMenu> createState() => _NgoOpMenuState();
+  State<GroceryMenu> createState() => _GroceryMenuState();
 }
 
-class _NgoOpMenuState extends State<NgoOpMenu> {
-
+class _GroceryMenuState extends State<GroceryMenu> {
   Future<DocumentSnapshot> getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
 
     if (uid != null && uid.isNotEmpty) {
       final DocumentSnapshot snapshot =
-          await FirebaseFirestore.instance.collection('ngo').doc(uid).get();
+          await FirebaseFirestore.instance.collection('grocery').doc(uid).get();
       return snapshot;
     } else {
       throw Exception('Invalid UID');
@@ -242,7 +241,7 @@ class _NgoOpMenuState extends State<NgoOpMenu> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text(
-                      'Ongoing requests',
+                      'Distribute expired food',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -299,34 +298,6 @@ class _NgoOpMenuState extends State<NgoOpMenu> {
                   children: const [
                     Text(
                       'Completed requests',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Poppins',
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                      color: Color.fromRGBO(20, 20, 20, 0.6),
-                    )
-                  ],
-                ),
-              ),
-              Divider(
-                color: Color.fromRGBO(20, 20, 20, 0.6),
-              ),
-              SizedBox(
-                height: 12,
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      'Manage volunteers',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

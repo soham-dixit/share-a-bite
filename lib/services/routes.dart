@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:share_a_bite/grocery_store/GroceryHome.dart';
 import 'package:share_a_bite/grocery_store/GroceryRegister.dart';
 import 'package:share_a_bite/grocery_store/GroceryVerify.dart';
+import 'package:share_a_bite/grocery_store/menu.dart';
 import 'package:share_a_bite/login/GroceryLogin.dart';
 import 'package:share_a_bite/login/GuestLogin.dart';
 import 'package:share_a_bite/login/MainLogin.dart';
@@ -182,8 +183,8 @@ appRoutes() => [
         middlewares: [MyMiddelware()],
       ),
       GetPage(
-        name: '/NgoOpMenu',
-        page: () => const NgoOpMenu(),
+        name: '/GroceryMenu',
+        page: () => const GroceryMenu(),
         middlewares: [MyMiddelware()],
       ),
     ];
