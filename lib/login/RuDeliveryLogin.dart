@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
-import 'package:share_a_bite/grocery_store/GroceryRegister.dart';
+import 'package:share_a_bite/login/RuOpLogin.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class GroceryLogin extends StatefulWidget {
-  const GroceryLogin({super.key});
+class RuDeliveryLogin extends StatefulWidget {
+  const RuDeliveryLogin({super.key});
 
   @override
-  State<GroceryLogin> createState() => _GroceryLoginState();
+  State<RuDeliveryLogin> createState() => _RuDeliveryLoginState();
 }
 
-class _GroceryLoginState extends State<GroceryLogin> {
+class _RuDeliveryLoginState extends State<RuDeliveryLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -33,22 +34,11 @@ class _GroceryLoginState extends State<GroceryLogin> {
         errorText: 'Password must have at least one special character')
   ]);
 
-  List inputs = [];
-
-  navigateToRegister() {
-    Get.to(const GroceryRegister());
+  RuOperatorLogin() {
+    Get.toNamed('/RuOpLogin');
   }
 
-  navigateToHome() async {
-    Get.offAllNamed('/GroceryHome');
-    if (FirebaseAuth.instance.currentUser != null) {
-      print(FirebaseAuth.instance.currentUser?.uid);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
-    }
-  }
-
-  groceryLogin(String email, String password) async {
+  RuDeliveryLogin(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
@@ -56,16 +46,15 @@ class _GroceryLoginState extends State<GroceryLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
-      navigateToHome();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        print('No user found for this email.');
         Get.snackbar(
           'Error!',
           'No user found for this email',
         );
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        print('Wrong password provided for this user');
         Get.snackbar(
           'Error!',
           'Wrong password provided for this user',
@@ -75,13 +64,13 @@ class _GroceryLoginState extends State<GroceryLogin> {
   }
 
   checkEmailExists(String email, String password) async {
-    final restaurantsRef = FirebaseFirestore.instance.collection('grocery');
+    final restaurantsRef = FirebaseFirestore.instance.collection('ru');
     final querySnapshot =
     await restaurantsRef.where('email', isEqualTo: email).get();
     if (querySnapshot.docs.isEmpty) {
       Get.snackbar("Error!", "Please register your account");
     } else {
-      groceryLogin(email, password);
+      RuDeliveryLogin(email, password);
     }
   }
 
@@ -92,7 +81,7 @@ class _GroceryLoginState extends State<GroceryLogin> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height / 10,
+              vertical: MediaQuery.of(context).size.height / 15,
               horizontal: MediaQuery.of(context).size.width / 15),
           child: Column(
             children: [
@@ -100,10 +89,10 @@ class _GroceryLoginState extends State<GroceryLogin> {
                 height: 18,
               ),
               const Text(
-                'Login as Grocery store',
+                'Login as Recycling unit delivery partner',
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontSize: 26,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -111,8 +100,9 @@ class _GroceryLoginState extends State<GroceryLogin> {
                 height: 10,
               ),
               SvgPicture.asset(
-                'assets/users/grocery.svg',
-                height: 100,
+                'assets/users/ru.svg',
+                height: 120,
+                width: 120,
               ),
               const SizedBox(
                 height: 10,
@@ -185,7 +175,7 @@ class _GroceryLoginState extends State<GroceryLogin> {
                           // fontWeight: FontWeight.bold,
                         ),
                         obscureText: true,
-                        // validator: passwordValidator,
+                        validator: passwordValidator,
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
                           label: Text('Password'),
@@ -217,11 +207,8 @@ class _GroceryLoginState extends State<GroceryLogin> {
                             //   _emailController.text,
                             //   _passwordController.text
                             // ];
-                            // groceryLogin(_emailController.text,
-                            //     _passwordController.text);
                             checkEmailExists(_emailController.text,
                                 _passwordController.text);
-                            // await FirebaseAuth.instance.signOut();
                           }
                         },
                       ),
@@ -232,7 +219,7 @@ class _GroceryLoginState extends State<GroceryLogin> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'New user?',
+                            'Login as',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 18,
@@ -242,9 +229,9 @@ class _GroceryLoginState extends State<GroceryLogin> {
                             textAlign: TextAlign.center,
                           ),
                           GestureDetector(
-                            onTap: navigateToRegister,
+                            onTap: RuOperatorLogin,
                             child: const Text(
-                              ' Register now',
+                              ' Operator?',
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 18,
