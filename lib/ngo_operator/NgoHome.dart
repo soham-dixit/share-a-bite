@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -19,14 +20,17 @@ class _NgoHomeState extends State<NgoHome> {
   String ngoName = '';
   String uid = '';
 
-  Future<DocumentSnapshot> getUserDetails() async {
+  Future<DataSnapshot> getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
 
     if (uid != null && uid.isNotEmpty) {
-      final DocumentSnapshot snapshot =
-          await FirebaseFirestore.instance.collection('ngo').doc(uid).get();
-      return snapshot;
+      DatabaseReference databaseRef = FirebaseDatabase.instance.ref();
+
+      // Retrieve the snapshot of the realtime database using uid
+      DatabaseEvent snapshot = await databaseRef.child('ngo').child(uid).once();
+
+      return snapshot.snapshot;
     } else {
       throw Exception('Invalid UID');
     }
@@ -52,10 +56,10 @@ class _NgoHomeState extends State<NgoHome> {
           ),
           child: Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: FutureBuilder<DocumentSnapshot>(
+            child: FutureBuilder<DataSnapshot>(
               future: getUserDetails(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+              builder:
+                  (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
                 if (snapshot.hasError) {
                   return AppBar(
                     automaticallyImplyLeading: false,
@@ -87,8 +91,9 @@ class _NgoHomeState extends State<NgoHome> {
                   );
                 } else {
                   if (snapshot.hasData && snapshot.data!.exists) {
-                    String name = snapshot.data!.get('name');
-                    String phoneNumber = snapshot.data!.get('phone');
+                    dynamic data = snapshot.data!.value;
+                    String name = data['name'];
+                    String phoneNumber = data['phone'];
 
                     return AppBar(
                       automaticallyImplyLeading: false,

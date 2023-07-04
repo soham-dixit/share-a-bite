@@ -55,7 +55,43 @@ class _SplashScreenState extends State<SplashScreen>
       if (snapshot.snapshot.value != null) {
         Get.offNamed('/RestroHome');
       } else {
-        Get.offNamed('/carousel');
+        // Get.offNamed('/carousel');
+        DatabaseEvent snapshot =
+            await databaseRef.child('ngo').child(uid).once();
+        if (snapshot.snapshot.value != null) {
+          Get.offNamed('/NgoHome');
+        } else {
+          DatabaseEvent snapshot =
+              await databaseRef.child('grocery').child(uid).once();
+
+          if (snapshot.snapshot.value != null) {
+            Get.offNamed('/GroceryHome');
+          } else {
+            DatabaseEvent snapshot =
+                await databaseRef.child('recycling_units').child(uid).once();
+            if (snapshot.snapshot.value != null) {
+              Get.offNamed('/RuHome');
+            } else {
+              DatabaseEvent snapshot = await databaseRef
+                  .child('ngo')
+                  .child('volunteers')
+                  .child(uid)
+                  .once();
+              if (snapshot.snapshot.value != null) {
+                // Get.offNamed('/VolunteerHome');
+              } else {
+                DatabaseEvent snapshot = await databaseRef
+                    .child('recycling_units')
+                    .child('delivery_exe')
+                    .child(uid)
+                    .once();
+                if (snapshot.snapshot.value != null) {
+                  // Get.offNamed('/DeliveryExeHome');
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

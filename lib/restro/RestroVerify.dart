@@ -249,11 +249,8 @@ class _RestroVerify2State extends State<RestroVerify2> {
       'license': widget.license,
       'phone': widget.phone,
     }).whenComplete(() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => RestroLogin(),
-        ),
-      );
+      Get.snackbar('Success', 'Registered Successfully');
+      Get.offAllNamed('/RestroLogin');
     });
   }
 

@@ -17,10 +17,6 @@ class RestroMenu extends StatefulWidget {
 }
 
 class _RestroMenuState extends State<RestroMenu> {
-  String restroName = '';
-  String restroNumber = '';
-  String restroEmail = '';
-
   Future<DataSnapshot> getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uid = prefs.getString('uid');
