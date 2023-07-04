@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/grocery_store/GroceryRegister.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
@@ -18,6 +20,10 @@ class GroceryLogin extends StatefulWidget {
 class _GroceryLoginState extends State<GroceryLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  Position? _currentPosition;
+  String latitude = '';
+  String longitude = '';
+  String? uid = '';
 
   final formKey = GlobalKey<FormState>();
 
@@ -56,7 +62,7 @@ class _GroceryLoginState extends State<GroceryLogin> {
         'Login Successful!',
         'You have been logged in successfully',
       );
-      navigateToHome();
+      setUid();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
@@ -74,10 +80,64 @@ class _GroceryLoginState extends State<GroceryLogin> {
     }
   }
 
+  setUid() async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser?.uid);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', FirebaseAuth.instance.currentUser!.uid);
+      uid = prefs.getString('uid');
+      print(uid);
+      _getCurrentPosition();
+    }
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      // latitude = _currentPosition!.latitude.toString();
+      // longitude = _currentPosition!.longitude.toString();
+      final intLatitude = _currentPosition!.latitude.toDouble();
+      final intLongitude = _currentPosition!.longitude.toDouble();
+      // store latitude and longitude in realtime database
+      final databaseReference = FirebaseDatabase.instance.ref();
+      databaseReference
+          .child('grocery')
+          .child(uid!)
+          .update({'latitude': intLatitude, 'longitude': intLongitude});
+      navigateToHome();
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return false;
+    }
+    return true;
+  }
+
   checkEmailExists(String email, String password) async {
     final restaurantsRef = FirebaseFirestore.instance.collection('grocery');
     final querySnapshot =
-    await restaurantsRef.where('email', isEqualTo: email).get();
+        await restaurantsRef.where('email', isEqualTo: email).get();
     if (querySnapshot.docs.isEmpty) {
       Get.snackbar("Error!", "Please register your account");
     } else {
@@ -217,10 +277,10 @@ class _GroceryLoginState extends State<GroceryLogin> {
                             //   _emailController.text,
                             //   _passwordController.text
                             // ];
-                            // groceryLogin(_emailController.text,
-                            //     _passwordController.text);
-                            checkEmailExists(_emailController.text,
+                            groceryLogin(_emailController.text,
                                 _passwordController.text);
+                            // checkEmailExists(_emailController.text,
+                            //     _passwordController.text);
                             // await FirebaseAuth.instance.signOut();
                           }
                         },

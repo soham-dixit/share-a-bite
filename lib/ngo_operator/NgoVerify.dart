@@ -226,7 +226,7 @@ class _NgoVerify2State extends State<NgoVerify2> {
     }
   }
 
-  registerRestro() async {
+  registerNgo() async {
     UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
             email: widget.email, password: widget.password);
@@ -375,7 +375,7 @@ class _NgoVerify2State extends State<NgoVerify2> {
                   onPressed: () async {
                     bool result = await verifyCodeNew(code);
                     if (result) {
-                      registerRestro();
+                      registerNgo();
                     } else {
                       Get.snackbar(
                           "Error", "Please verify your email address!");

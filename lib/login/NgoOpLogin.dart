@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -92,12 +93,16 @@ class _NgoOpLoginState extends State<NgoOpLogin> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
       setState(() => _currentPosition = position);
-      latitude = _currentPosition!.latitude.toString();
-      longitude = _currentPosition!.longitude.toString();
-      FirebaseFirestore.instance.collection('ngo').doc(uid).update({
-        'latitude': latitude,
-        'longitude': longitude,
-      });
+      // latitude = _currentPosition!.latitude.toString();
+      // longitude = _currentPosition!.longitude.toString();
+      final intLatitude = _currentPosition!.latitude.toDouble();
+      final intLongitude = _currentPosition!.longitude.toDouble();
+      // store latitude and longitude in realtime database
+      final databaseReference = FirebaseDatabase.instance.ref();
+      databaseReference
+          .child('ngo')
+          .child(uid!)
+          .update({'latitude': intLatitude, 'longitude': intLongitude});
       navigateToHome();
     }).catchError((e) {
       debugPrint(e);

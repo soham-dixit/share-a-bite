@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -24,6 +25,7 @@ final TextEditingController _passwordController = TextEditingController();
 
 class _RuRegisterState extends State<RuRegister> {
   final formKey = GlobalKey<FormState>();
+  bool already_exists = false;
 
   final emailValidator = MultiValidator([
     EmailValidator(errorText: 'Please enter a valid email ID'),
@@ -42,6 +44,26 @@ class _RuRegisterState extends State<RuRegister> {
 
   navigateToLogin() {
     Get.back();
+  }
+
+  check_if_already_exists() async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await databaseReference.once();
+    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+    if (databaseData['recycling_units'] != null) {
+      dynamic keys_list = databaseData['recycling_units'].keys.toList();
+      for (int i = 0; i < keys_list.length; i++) {
+        if (databaseData['recycling_units'][keys_list[i]]
+                .containsValue(_contactController.text) ||
+            databaseData['recycling_units'][keys_list[i]]
+                .containsValue(_emailController.text)) {
+          already_exists = true;
+        }
+      }
+    }
+    already_exists
+        ? Get.snackbar('Error', 'Email or phone is already registered')
+        : null;
   }
 
   @override
@@ -203,14 +225,16 @@ class _RuRegisterState extends State<RuRegister> {
                           //   _emailController.text,
                           //   _passwordController.text
                           // ];
-                          print(_nameController.text.toString());
-                          print(_emailController.text.toString());
-                          print(_contactController.text.toString());
-                          Get.to(() => RuRegister2(
-                            name: _nameController.text.toString(),
-                            email: _emailController.text.toString(),
-                            contact: _contactController.text.toString(),
-                          ));
+                          check_if_already_exists().whenComplete(() {
+                            already_exists
+                                ? null
+                                : Get.to(() => RuRegister2(
+                                      name: _nameController.text.toString(),
+                                      email: _emailController.text.toString(),
+                                      contact:
+                                          _contactController.text.toString(),
+                                    ));
+                          });
                         }
                       },
                     ),
@@ -262,9 +286,9 @@ class RuRegister2 extends StatefulWidget {
   final String contact;
   const RuRegister2(
       {Key? key,
-        required this.name,
-        required this.email,
-        required this.contact})
+      required this.name,
+      required this.email,
+      required this.contact})
       : super(key: key);
 
   @override
@@ -276,15 +300,18 @@ class _RuRegister2State extends State<RuRegister2> {
 
   final passwordValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter a password'),
-    MinLengthValidator(6, errorText: 'Password must be at least 6 digits long'),
-    PatternValidator(r'(?=.*?[#?!@$%^&*-])',
-        errorText: 'Passwords must have at least one special character')
+    MinLengthValidator(6, errorText: 'Minimum 6 characters'),
+    PatternValidator(
+      r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])',
+      errorText: 'Letters, numbers, and at least one special character',
+    ),
   ]);
 
   final licenseValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter a license number'),
-    PatternValidator(r'^[a-zA-Z0-9]+$',
-        errorText: 'Passwords must have at least one special character')
+    PatternValidator(r'^[a-zA-Z0-9]{8}$',
+        errorText:
+            'Must be 8 digits and a combination of alphabets and numbers')
   ]);
 
   final addressValidator = MultiValidator([
@@ -456,13 +483,13 @@ class _RuRegister2State extends State<RuRegister2> {
                           //   _passwordController.text
                           // ];
                           Get.to(() => RuVerify(
-                            name: widget.name,
-                            email: widget.email,
-                            phone: widget.contact,
-                            password: _passwordController.text.toString(),
-                            address: _addressController.text.toString(),
-                            license: _licenseController.text.toString(),
-                          ));
+                                name: widget.name,
+                                email: widget.email,
+                                phone: widget.contact,
+                                password: _passwordController.text.toString(),
+                                address: _addressController.text.toString(),
+                                license: _licenseController.text.toString(),
+                              ));
                         }
                       },
                     ),
