@@ -233,7 +233,9 @@ class _RestroHomeState extends State<RestroHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/RestroPendingReq');
+                      },
                       child: Container(
                         width: 300,
                         height: 150,
