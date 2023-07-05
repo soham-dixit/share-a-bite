@@ -149,7 +149,7 @@ class _ReqCardState extends State<ReqCard> {
                       ),
                     ),
                     // Customer name
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
                     Text(
@@ -160,7 +160,7 @@ class _ReqCardState extends State<ReqCard> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 6,
                     ),
                     // Assigned employee
@@ -169,7 +169,7 @@ class _ReqCardState extends State<ReqCard> {
                         Icons.person_2_outlined,
                         size: 12,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
                       Text(
@@ -182,7 +182,7 @@ class _ReqCardState extends State<ReqCard> {
                         ),
                       ),
                     ]),
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
 
@@ -193,7 +193,7 @@ class _ReqCardState extends State<ReqCard> {
                           Icons.calendar_today_outlined,
                           size: 12,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 4,
                         ),
 
@@ -214,16 +214,16 @@ class _ReqCardState extends State<ReqCard> {
                 Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.fromLTRB(
+                      padding: const EdgeInsets.fromLTRB(
                           8, 12, 8, 12), // Adjust padding as needed
                       decoration: BoxDecoration(
                         color: widget.status == 'pending'
-                            ? Color.fromRGBO(219, 0, 0, 0.078)
+                            ? const Color.fromRGBO(219, 0, 0, 0.078)
                             : widget.status == 'accepted'
-                                ? Color.fromRGBO(89, 195, 106, 0.08)
+                                ? const Color.fromRGBO(89, 195, 106, 0.08)
                                 : widget.status == 'completed'
-                                    ? Color.fromRGBO(244, 73, 15, 0.08)
-                                    : Color.fromRGBO(255, 204, 0, 0.08),
+                                    ? const Color.fromRGBO(244, 73, 15, 0.08)
+                                    : const Color.fromRGBO(255, 204, 0, 0.08),
 
                         borderRadius:
                             BorderRadius.circular(8), // Radius of the box
@@ -235,14 +235,134 @@ class _ReqCardState extends State<ReqCard> {
                           fontSize: 9,
                           // fontWeight: FontWeight.bold,
                           color: widget.status == 'pending'
-                              ? Color.fromRGBO(255, 0, 0, 1)
+                              ? const Color.fromRGBO(255, 0, 0, 1)
                               : widget.status == 'accepted'
-                                  ? Color.fromRGBO(89, 195, 106, 0.08)
+                                  ? const Color.fromRGBO(89, 195, 106, 0.08)
                                   : widget.status == 'completed'
-                                      ? Color.fromRGBO(244, 73, 15, 0.08)
-                                      : Color.fromRGBO(244, 73, 15, 0.08),
+                                      ? const Color.fromRGBO(244, 73, 15, 0.08)
+                                      : const Color.fromRGBO(244, 73, 15, 0.08),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class VolunteerCard extends StatefulWidget {
+  final VoidCallback onPress;
+
+  final String name;
+  final String email;
+  final String phone;
+  const VolunteerCard(
+      {Key? key,
+      required this.name,
+      required this.email,
+      required this.phone,
+      required this.onPress})
+      : super(key: key);
+
+  @override
+  State<VolunteerCard> createState() => _VolunteerCardState();
+}
+
+//display vehicle number, customer name, assigned employee, job created date and time on left side one below the other and status on top right. if status is ongoing, display text in blue, if status is ready, display text in green, if status is created, display text in yellow, if status is payment due, display text in red
+class _VolunteerCardState extends State<VolunteerCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      child: GestureDetector(
+        onTap: widget.onPress,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          elevation: 1, // Add shadow
+          child: Container(
+            width: 358.0, // Set width
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Vehicle number
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.person_outline,
+                          size: 18,
+                        ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Text(
+                          widget.name,
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Customer name
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.email_outlined,
+                            size: 12,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text(
+                            widget.email,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    // Assigned employee
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: Row(children: [
+                        const Icon(
+                          Icons.phone_outlined,
+                          size: 12,
+                        ),
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        Text(
+                          widget.phone,
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 10,
+                          ),
+                        ),
+                      ]),
                     ),
                   ],
                 ),

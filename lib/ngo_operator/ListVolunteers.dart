@@ -1,8 +1,14 @@
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/widgets/CommonWidgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListVolunteers extends StatefulWidget {
   const ListVolunteers({super.key});
@@ -12,6 +18,35 @@ class ListVolunteers extends StatefulWidget {
 }
 
 class _ListVolunteersState extends State<ListVolunteers> {
+  String? uid = '';
+  dynamic keys_list = [];
+  int cout = 0;
+  String? key;
+  List<dynamic> data = [];
+  var result;
+
+  getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    uid = prefs.getString('uid');
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await databaseReference.once();
+    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+    keys_list = databaseData['ngo'][uid]['volunteers'].keys.toList();
+
+    data.clear();
+
+    if (databaseData['ngo'] != null) {
+      for (String key in keys_list) {
+        dynamic volData = databaseData['ngo'][uid]['volunteers'][key];
+        data.addAll(volData.values.toList());
+      }
+    }
+
+    print(data.length);
+    print(data);
+    return data;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,46 +84,42 @@ class _ListVolunteersState extends State<ListVolunteers> {
                     SizedBox(
                       height: 24,
                     ),
-                    // SingleChildScrollView(
-                    //   child: Column(children: [
-                    //     FutureBuilder(
-                    //         future: getData(),
-                    //         builder: (context, AsyncSnapshot snapshot) {
-                    //           switch (snapshot.connectionState) {
-                    //             case ConnectionState.waiting:
-                    //               return Center(
-                    //                   child: CupertinoActivityIndicator());
-                    //             case ConnectionState.none:
-                    //               return Text('none');
-                    //             case ConnectionState.active:
-                    //               return Text('active');
-                    //             case ConnectionState.done:
-                    //               if (snapshot.data.length > 0) {
-                    //                 return ListView.builder(
-                    //                   shrinkWrap: true,
-                    //                   physics: BouncingScrollPhysics(),
-                    //                   scrollDirection: Axis.vertical,
-                    //                   itemCount:
-                    //                       (snapshot.data.length / 10).floor(),
-                    //                   itemBuilder: (context, i) {
-                    //                     return ReqCard(
-                    //                         restroName:
-                    //                             snapshot.data[10 * i + 8],
-                    //                         foodName: snapshot.data[10 * i + 7],
-                    //                         foodType: snapshot.data[10 * i + 5],
-                    //                         shelfLife:
-                    //                             snapshot.data[10 * i + 2],
-                    //                         status: snapshot.data[10 * i + 3],
-                    //                         onPress: () {});
-                    //                   },
-                    //                 );
-                    //               } else {
-                    //                 return Text('No pending requests');
-                    //               }
-                    //           }
-                    //         })
-                    //   ]),
-                    // ),
+                    SingleChildScrollView(
+                      child: Column(children: [
+                        FutureBuilder(
+                            future: getData(),
+                            builder: (context, AsyncSnapshot snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Center(
+                                      child: CupertinoActivityIndicator());
+                                case ConnectionState.none:
+                                  return Text('none');
+                                case ConnectionState.active:
+                                  return Text('active');
+                                case ConnectionState.done:
+                                  if (snapshot.data.length > 0) {
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: BouncingScrollPhysics(),
+                                      scrollDirection: Axis.vertical,
+                                      itemCount:
+                                          (snapshot.data.length / 4).floor(),
+                                      itemBuilder: (context, i) {
+                                        return VolunteerCard(
+                                            name: snapshot.data[4 * i + 1],
+                                            email: snapshot.data[4 * i + 2],
+                                            phone: snapshot.data[4 * i + 0],
+                                            onPress: () {});
+                                      },
+                                    );
+                                  } else {
+                                    return Text('No pending requests');
+                                  }
+                              }
+                            })
+                      ]),
+                    ),
                   ],
                 ),
               ],

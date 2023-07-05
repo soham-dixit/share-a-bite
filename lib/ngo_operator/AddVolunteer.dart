@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_a_bite/ngo_operator/ListVolunteers.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -72,11 +75,20 @@ class _AddVolunteerState extends State<AddVolunteer> {
   }
 
   navigateBack() {
-    Get.back();
-    // clear all text fields
+    Get.to(() => ListVolunteers())?.then((_) {
+      // This code will run after returning from ListVolunteers page
+      // You can perform any refresh or update operations here
+      // For example, you can call a method to refresh the data
+      setState(() {});
+    });
     _nameController.clear();
     _emailController.clear();
     _phoneController.clear();
+    // clear image
+    setState(() {
+      image = null;
+      isImageUploaded = false;
+    });
     Get.snackbar('Success!', 'Volunteer has been added successfully');
   }
 
@@ -366,7 +378,8 @@ class _AddVolunteerState extends State<AddVolunteer> {
               isImageUploaded
                   ? Container(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 30),
+                          top: MediaQuery.of(context).size.height / 30,
+                          bottom: 20),
                       child: MainButton(
                         initialTitle: 'Add',
                         onPressed: () {
