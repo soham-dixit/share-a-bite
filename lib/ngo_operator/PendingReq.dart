@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -18,9 +20,14 @@ class _PendingReqState extends State<PendingReq> {
   String? uid = '';
   List latitudes = [];
   List longitudes = [];
-  dynamic key_list = [];
+  List keys_list = [];
   dynamic nearest_list = [];
+  dynamic pending_list = [];
   String? key;
+  int pendingCount = 0;
+  List<dynamic> pendingListData = [];
+  List data = [];
+  var result;
 
   getRestroLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,7 +35,7 @@ class _PendingReqState extends State<PendingReq> {
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
     Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    dynamic keys_list = databaseData['restaurants'].keys.toList();
+    keys_list = databaseData['restaurants'].keys.toList();
 
     if (databaseData['restaurants'] != null) {
       for (int i = 0; i < keys_list.length; i++) {
@@ -43,7 +50,9 @@ class _PendingReqState extends State<PendingReq> {
       }
     }
 
-    // calculate which restro is in 10km radius and store in list
+    print('latitudes $latitudes');
+    print('longitudes $longitudes');
+
     for (var i = 0; i < latitudes.length; i++) {
       geolocator.Position position =
           await geolocator.Geolocator.getCurrentPosition(
@@ -53,23 +62,73 @@ class _PendingReqState extends State<PendingReq> {
       print('distance in meters $distanceInMeters');
       if (distanceInMeters < 10000) {
         nearest_list.add(keys_list[i]);
-        print(nearest_list);
-        print(nearest_list.length);
       } else {
         print('restro is not in 10km radius');
       }
     }
+
+    for (var i = 0; i < nearest_list.length; i++) {
+      if (databaseData['restaurants'][nearest_list[i]]['distribution']
+              ['pending'] !=
+          null) {
+        pending_list = databaseData['restaurants'][nearest_list[i]]
+                ['distribution']['pending']
+            .keys
+            .toList();
+      }
+    }
+
+    print('nearest list $nearest_list');
+    print('pending list $pending_list');
+    pendingListData = [];
+
+    if (databaseData['restaurants'] != null) {
+      for (String key in nearest_list) {
+        for (String pendingKey in pending_list) {
+          dynamic pendingData = databaseData['restaurants'][key]['distribution']
+              ['pending'][pendingKey];
+          pendingListData.addAll(pendingData.values.toList());
+        }
+      }
+    }
+
+    print('pending list data $pendingListData');
+
+    print(pendingListData.length);
+
+    return pendingListData;
   }
 
-  callMethods() async {
-    getRestroLocation();
+  // getPendingList() async {
+  //   final databaseReference = FirebaseDatabase.instance.ref();
+  //   DatabaseEvent event = await databaseReference.once();
+  //   Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+  //   // print(databaseData);
+
+  //   pendingListData = [];
+
+  //   if (databaseData['restaurants'] != null) {
+  //     for (String key in nearest_list) {
+  //       for (String pendingKey in pending_list) {
+  //         dynamic pendingData = databaseData['restaurants'][key]['distribution']
+  //             ['pending'][pendingKey];
+  //         pendingListData.addAll(pendingData.values.toList());
+  //       }
+  //     }
+  //   }
+
+  //   return pendingListData;
+  // }
+
+  test() {
+    print('card pressed');
   }
 
-  @override
-  void initState() {
-    super.initState();
-    callMethods();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   result = getRestroLocation();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,13 +167,45 @@ class _PendingReqState extends State<PendingReq> {
                     SizedBox(
                       height: 24,
                     ),
-                    ReqCard(
-                      restroName: 'Resto',
-                      foodName: 'Pizza',
-                      foodType: 'Veg',
-                      shelfLife: 'timestamp',
-                      status: 'Pending',
-                      onPress: () {},
+                    SingleChildScrollView(
+                      child: Column(children: [
+                        FutureBuilder(
+                            future: getRestroLocation(),
+                            builder: (context, AsyncSnapshot snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Center(
+                                      child: CupertinoActivityIndicator());
+                                case ConnectionState.none:
+                                  return Text('none');
+                                case ConnectionState.active:
+                                  return Text('active');
+                                case ConnectionState.done:
+                                  if (snapshot.data.length > 0) {
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: BouncingScrollPhysics(),
+                                      scrollDirection: Axis.vertical,
+                                      itemCount:
+                                          (snapshot.data.length / 10).floor(),
+                                      itemBuilder: (context, i) {
+                                        return ReqCard(
+                                            restroName:
+                                                snapshot.data[10 * i + 8],
+                                            foodName: snapshot.data[10 * i + 7],
+                                            foodType: snapshot.data[10 * i + 5],
+                                            shelfLife:
+                                                snapshot.data[10 * i + 2],
+                                            status: snapshot.data[10 * i + 3],
+                                            onPress: () {});
+                                      },
+                                    );
+                                  } else {
+                                    return Text('No pending requests');
+                                  }
+                              }
+                            })
+                      ]),
                     ),
                   ],
                 ),

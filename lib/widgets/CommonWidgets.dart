@@ -122,7 +122,7 @@ class _ReqCardState extends State<ReqCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: GestureDetector(
         onTap: widget.onPress,
         child: Card(
@@ -217,11 +217,11 @@ class _ReqCardState extends State<ReqCard> {
                       padding: EdgeInsets.fromLTRB(
                           8, 12, 8, 12), // Adjust padding as needed
                       decoration: BoxDecoration(
-                        color: widget.status == 'Pending'
+                        color: widget.status == 'pending'
                             ? Color.fromRGBO(219, 0, 0, 0.078)
-                            : widget.status == 'Accepted'
+                            : widget.status == 'accepted'
                                 ? Color.fromRGBO(89, 195, 106, 0.08)
-                                : widget.status == 'Completed'
+                                : widget.status == 'completed'
                                     ? Color.fromRGBO(244, 73, 15, 0.08)
                                     : Color.fromRGBO(255, 204, 0, 0.08),
 
@@ -234,11 +234,11 @@ class _ReqCardState extends State<ReqCard> {
                           fontFamily: 'Poppins',
                           fontSize: 9,
                           // fontWeight: FontWeight.bold,
-                          color: widget.status == 'Pending'
+                          color: widget.status == 'pending'
                               ? Color.fromRGBO(255, 0, 0, 1)
-                              : widget.status == 'Accepted'
+                              : widget.status == 'accepted'
                                   ? Color.fromRGBO(89, 195, 106, 0.08)
-                                  : widget.status == 'Completed'
+                                  : widget.status == 'completed'
                                       ? Color.fromRGBO(244, 73, 15, 0.08)
                                       : Color.fromRGBO(244, 73, 15, 0.08),
                         ),

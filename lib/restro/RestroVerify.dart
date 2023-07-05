@@ -234,6 +234,8 @@ class _RestroVerify2State extends State<RestroVerify2> {
         .createUserWithEmailAndPassword(
             email: widget.email, password: widget.password);
 
+    await userCredential.user!.updateDisplayName(widget.name);
+
     saveInfo();
   }
 
