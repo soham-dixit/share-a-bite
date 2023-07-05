@@ -311,7 +311,9 @@ class _NgoHomeState extends State<NgoHome> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/ListVolunteers');
+                      },
                       child: Container(
                         width: 150,
                         height: 150,
