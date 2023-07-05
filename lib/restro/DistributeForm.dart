@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +40,7 @@ class _DistributeFormState extends State<DistributeForm> {
   String latitude = '';
   String longitude = '';
   var newChildKey = '';
+  String? name = '';
 
   final locationValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter your location'),
@@ -66,6 +68,10 @@ class _DistributeFormState extends State<DistributeForm> {
   ];
 
   Future<void> _getCurrentPosition() async {
+    final user = FirebaseAuth.instance.currentUser;
+    name = user!.displayName;
+    print('name$name');
+
     // final hasPermission = await _handleLocationPermission();
     // if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
@@ -247,6 +253,7 @@ class _DistributeFormState extends State<DistributeForm> {
         'latitude': intLatitude,
         'longitude': intLongitude,
         'status': 'pending',
+        'restroName': name,
       });
 
       print('New child key: $newChildKey');
