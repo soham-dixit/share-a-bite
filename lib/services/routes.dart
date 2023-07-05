@@ -12,6 +12,8 @@ import 'package:share_a_bite/login/NgoVolLogin.dart';
 import 'package:share_a_bite/login/RestroLogin.dart';
 import 'package:share_a_bite/login/RuDeliveryLogin.dart';
 import 'package:share_a_bite/login/RuOpLogin.dart';
+import 'package:share_a_bite/ngo_operator/AddVolunteer.dart';
+import 'package:share_a_bite/ngo_operator/ListVolunteers.dart';
 import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
 import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
@@ -202,6 +204,16 @@ appRoutes() => [
       GetPage(
         name: '/RestroPendingReq',
         page: () => const RestroPendingReq(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/ListVolunteers',
+        page: () => const ListVolunteers(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/AddVolunteer',
+        page: () => const AddVolunteer(),
         middlewares: [MyMiddelware()],
       ),
     ];
