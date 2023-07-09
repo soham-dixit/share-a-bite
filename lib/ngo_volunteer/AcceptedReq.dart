@@ -77,7 +77,7 @@ class _AcceptedReqVolState extends State<AcceptedReqVol> {
                       height: 33,
                     ),
                     const Text(
-                      'Pending Requests',
+                      'Ongoing Requests',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,

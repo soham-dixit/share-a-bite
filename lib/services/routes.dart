@@ -25,6 +25,7 @@ import 'package:share_a_bite/ngo_volunteer/PendingReqDetails.dart';
 import 'package:share_a_bite/ngo_volunteer/VolHome.dart';
 import 'package:share_a_bite/ngo_volunteer/VolRegister.dart';
 import 'package:share_a_bite/ngo_volunteer/VolVerify.dart';
+import 'package:share_a_bite/ngo_volunteer/menu.dart';
 import 'package:share_a_bite/onboarding/SplashScreen.dart';
 import 'package:share_a_bite/onboarding/carousel.dart';
 import 'package:share_a_bite/recycling_unit/RuHome.dart';
@@ -257,6 +258,11 @@ appRoutes() => [
       GetPage(
         name: '/VolAcceptedReq',
         page: () => const AcceptedReqVol(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/VolMenu',
+        page: () => const VolMenu(),
         middlewares: [MyMiddelware()],
       ),
     ];
