@@ -1,21 +1,20 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/ngo_volunteer/AcceptedReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RestroPendingReq extends StatefulWidget {
-  const RestroPendingReq({super.key});
+class AcceptedReqVol extends StatefulWidget {
+  const AcceptedReqVol({super.key});
 
   @override
-  State<RestroPendingReq> createState() => _RestroPendingReqState();
+  State<AcceptedReqVol> createState() => _AcceptedReqVolState();
 }
 
-class _RestroPendingReqState extends State<RestroPendingReq> {
+class _AcceptedReqVolState extends State<AcceptedReqVol> {
   String? uid = '';
   dynamic keys_list = [];
   dynamic pending_list = [];
@@ -31,16 +30,16 @@ class _RestroPendingReqState extends State<RestroPendingReq> {
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
     Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    keys_list = databaseData['restaurants'][uid]['distribution']['pending']
+    keys_list = databaseData['volunteers'][uid]['distribution']['accepted']
         .keys
         .toList();
     // print(keys_list);
     pendingListData.clear();
 
-    if (databaseData['restaurants'] != null) {
+    if (databaseData['volunteers'] != null) {
       for (String key in keys_list) {
         dynamic pendingData =
-            databaseData['restaurants'][uid]['distribution']['pending'][key];
+            databaseData['volunteers'][uid]['distribution']['accepted'][key];
         pendingListData.addAll(pendingData.values.toList());
       }
     }
@@ -118,7 +117,10 @@ class _RestroPendingReqState extends State<RestroPendingReq> {
                                             shelfLife:
                                                 snapshot.data[10 * i + 2],
                                             status: snapshot.data[10 * i + 3],
-                                            onPress: () {});
+                                            onPress: () {
+                                              Get.to(() => AcceptedReqDetails(
+                                                  id: keys_list[i]));
+                                            });
                                       },
                                     );
                                   } else {

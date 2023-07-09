@@ -16,6 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tflite/tflite.dart';
 
 class DistributeForm extends StatefulWidget {
   const DistributeForm({super.key});
@@ -33,6 +34,8 @@ final TextEditingController _photoController = TextEditingController();
 
 class _DistributeFormState extends State<DistributeForm> {
   final formKey = GlobalKey<FormState>();
+  List predictions = [];
+  bool _loading = true;
 
   String? selectedValue;
   String? _currentAddress;
@@ -192,6 +195,7 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
+      // detectImage(imageTemp);
       // uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
@@ -206,11 +210,28 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
+      // detectImage(imageTemp);
       // uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
+  }
+
+  detectImage(File img) async {
+    var prediction = await Tflite.runModelOnImage(
+        path: img.path,
+        numResults: 2,
+        threshold: 0.6,
+        imageMean: 127.5,
+        imageStd: 127.5);
+
+    setState(() {
+      _loading = false;
+      predictions = prediction!;
+    });
+    print('prediction: $predictions');
+    return;
   }
 
   _submitForm() async {
@@ -290,10 +311,18 @@ class _DistributeFormState extends State<DistributeForm> {
     }
   }
 
+  loadModel() async {
+    await Tflite.loadModel(
+      model: 'assets/model/model.tflite',
+      labels: 'assets/model/labels.txt',
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getCurrentPosition();
+    // loadModel();
   }
 
   Future<bool> _handleLocationPermission() async {
@@ -644,8 +673,8 @@ class _DistributeFormState extends State<DistributeForm> {
                                 SizedBox(width: 5),
                                 Text(
                                   isImageUploaded
-                                      ? 'Image Uploaded'
-                                      : 'Upload Photo',
+                                      ? 'Photo uploaded'
+                                      : 'Upload photo',
                                   style: const TextStyle(
                                     fontSize: 22,
                                     color: Color(0xFF616161),
@@ -656,26 +685,65 @@ class _DistributeFormState extends State<DistributeForm> {
                             ),
                           ),
                         ),
+                        // preview image in box
+                        isImageUploaded
+                            ? Container(
+                                margin: EdgeInsets.only(top: 10),
+                                height: 180,
+                                width: 180,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: const Color(
+                                        0xffff3333), // Set the color of the border
+                                    width: 2, // Set the width of the border
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: FileImage(image!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
                 ],
               ),
-              Container(
-                  padding:
-                      // calculate mobile screen height and divide it by 2
-                      EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 100,
+              isImageUploaded
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 30,
                           bottom: 20),
-                  child: MainButton(
-                    initialTitle: 'Submit',
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        _submitForm();
-                        print('Form is valid');
-                      }
-                    },
-                  ))
+                      child: MainButton(
+                        initialTitle: 'Submit',
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            _submitForm();
+                            print('Form is valid');
+                          }
+                        },
+                      ))
+                  : Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 20),
+                      child: MainButton(
+                        initialTitle: 'Add',
+                        onPressed: () {
+                          if (formKey.currentState!.validate() &&
+                              isImageUploaded) {
+                            _submitForm();
+                            print('Form is valid');
+                          } else {
+                            Get.snackbar('Error', 'Please upload photo');
+                          }
+                        },
+                      ))
             ],
           ),
         ),

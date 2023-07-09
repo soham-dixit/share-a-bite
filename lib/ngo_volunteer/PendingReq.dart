@@ -1,54 +1,109 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart' as geolocator;
+import 'package:share_a_bite/ngo_volunteer/PendingReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RestroPendingReq extends StatefulWidget {
-  const RestroPendingReq({super.key});
+class VolPendingReq extends StatefulWidget {
+  const VolPendingReq({super.key});
 
   @override
-  State<RestroPendingReq> createState() => _RestroPendingReqState();
+  State<VolPendingReq> createState() => _VolPendingReqState();
 }
 
-class _RestroPendingReqState extends State<RestroPendingReq> {
+class _VolPendingReqState extends State<VolPendingReq> {
   String? uid = '';
-  dynamic keys_list = [];
+  List latitudes = [];
+  List longitudes = [];
+  List keys_list = [];
+  dynamic nearest_list = [];
   dynamic pending_list = [];
-  int pendingCount = 0;
   String? key;
+  int pendingCount = 0;
   List<dynamic> pendingListData = [];
   List data = [];
   var result;
 
-  getData() async {
+  getRestroLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid = prefs.getString('uid');
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
     Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    keys_list = databaseData['restaurants'][uid]['distribution']['pending']
-        .keys
-        .toList();
-    // print(keys_list);
-    pendingListData.clear();
+    keys_list = databaseData['restaurants'].keys.toList();
 
     if (databaseData['restaurants'] != null) {
-      for (String key in keys_list) {
-        dynamic pendingData =
-            databaseData['restaurants'][uid]['distribution']['pending'][key];
-        pendingListData.addAll(pendingData.values.toList());
+      for (int i = 0; i < keys_list.length; i++) {
+        key = keys_list[i];
+        if (databaseData['restaurants'][keys_list[i]]['latitude'] != null) {
+          latitudes.add(databaseData['restaurants'][keys_list[i]]['latitude']);
+        }
+        if (databaseData['restaurants'][keys_list[i]]['longitude'] != null) {
+          longitudes
+              .add(databaseData['restaurants'][keys_list[i]]['longitude']);
+        }
       }
     }
-    // print('pending list data $pendingListData');
+
+    print('latitudes $latitudes');
+    print('longitudes $longitudes');
+
+    nearest_list.clear();
+
+    for (var i = 0; i < latitudes.length; i++) {
+      geolocator.Position position =
+          await geolocator.Geolocator.getCurrentPosition(
+              desiredAccuracy: geolocator.LocationAccuracy.high);
+      double distanceInMeters = geolocator.Geolocator.distanceBetween(
+          position.latitude, position.longitude, latitudes[i], longitudes[i]);
+      print('distance in meters $distanceInMeters');
+      if (distanceInMeters < 10000) {
+        if (i < keys_list.length) {
+          nearest_list.add(keys_list[i]);
+        }
+      } else {
+        print('restro is not in 10km radius');
+      }
+    }
+
+    for (var i = 0; i < nearest_list.length; i++) {
+      if (databaseData['restaurants'][nearest_list[i]]['distribution']
+              ['pending'] !=
+          null) {
+        pending_list = databaseData['restaurants'][nearest_list[i]]
+                ['distribution']['pending']
+            .keys
+            .toList();
+      }
+    }
+
+    print('nearest list $nearest_list');
+    print('pending list $pending_list');
+    pendingListData = [];
+
+    if (databaseData['restaurants'] != null) {
+      for (String key in nearest_list) {
+        for (String pendingKey in pending_list) {
+          dynamic pendingData = databaseData['restaurants'][key]['distribution']
+              ['pending'][pendingKey];
+          pendingListData.addAll(pendingData.values.toList());
+        }
+      }
+    }
+
+    print('pending list data $pendingListData');
 
     print(pendingListData.length);
 
     return pendingListData;
+  }
+
+  test() {
+    print('card pressed');
   }
 
   @override
@@ -91,7 +146,7 @@ class _RestroPendingReqState extends State<RestroPendingReq> {
                     SingleChildScrollView(
                       child: Column(children: [
                         FutureBuilder(
-                            future: getData(),
+                            future: getRestroLocation(),
                             builder: (context, AsyncSnapshot snapshot) {
                               switch (snapshot.connectionState) {
                                 case ConnectionState.waiting:
@@ -118,7 +173,10 @@ class _RestroPendingReqState extends State<RestroPendingReq> {
                                             shelfLife:
                                                 snapshot.data[10 * i + 2],
                                             status: snapshot.data[10 * i + 3],
-                                            onPress: () {});
+                                            onPress: () {
+                                              Get.to(() => PendingReqDetailsVol(
+                                                  id: pending_list[i]));
+                                            });
                                       },
                                     );
                                   } else {
