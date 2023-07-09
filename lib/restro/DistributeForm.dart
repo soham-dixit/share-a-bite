@@ -16,6 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tflite/tflite.dart';
 
 class DistributeForm extends StatefulWidget {
   const DistributeForm({super.key});
@@ -33,6 +34,8 @@ final TextEditingController _photoController = TextEditingController();
 
 class _DistributeFormState extends State<DistributeForm> {
   final formKey = GlobalKey<FormState>();
+  List predictions = [];
+  bool _loading = true;
 
   String? selectedValue;
   String? _currentAddress;
@@ -192,6 +195,7 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
+      // detectImage(imageTemp);
       // uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
@@ -206,11 +210,28 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
+      // detectImage(imageTemp);
       // uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
+  }
+
+  detectImage(File img) async {
+    var prediction = await Tflite.runModelOnImage(
+        path: img.path,
+        numResults: 2,
+        threshold: 0.6,
+        imageMean: 127.5,
+        imageStd: 127.5);
+
+    setState(() {
+      _loading = false;
+      predictions = prediction!;
+    });
+    print('prediction: $predictions');
+    return;
   }
 
   _submitForm() async {
@@ -290,10 +311,18 @@ class _DistributeFormState extends State<DistributeForm> {
     }
   }
 
+  loadModel() async {
+    await Tflite.loadModel(
+      model: 'assets/model/model.tflite',
+      labels: 'assets/model/labels.txt',
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getCurrentPosition();
+    // loadModel();
   }
 
   Future<bool> _handleLocationPermission() async {
