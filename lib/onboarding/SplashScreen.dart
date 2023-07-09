@@ -73,12 +73,11 @@ class _SplashScreenState extends State<SplashScreen>
               Get.offNamed('/RuHome');
             } else {
               DatabaseEvent snapshot = await databaseRef
-                  .child('ngo')
                   .child('volunteers')
                   .child(uid)
                   .once();
               if (snapshot.snapshot.value != null) {
-                // Get.offNamed('/VolunteerHome');
+                Get.offNamed('/VolHome');
               } else {
                 DatabaseEvent snapshot = await databaseRef
                     .child('recycling_units')

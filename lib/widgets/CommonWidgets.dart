@@ -237,7 +237,7 @@ class _ReqCardState extends State<ReqCard> {
                           color: widget.status == 'pending'
                               ? const Color.fromRGBO(255, 0, 0, 1)
                               : widget.status == 'accepted'
-                                  ? const Color.fromRGBO(89, 195, 106, 0.08)
+                                  ? Color.fromARGB(255, 16, 157, 40)
                                   : widget.status == 'completed'
                                       ? const Color.fromRGBO(244, 73, 15, 0.08)
                                       : const Color.fromRGBO(244, 73, 15, 0.08),
