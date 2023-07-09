@@ -644,8 +644,8 @@ class _DistributeFormState extends State<DistributeForm> {
                                 SizedBox(width: 5),
                                 Text(
                                   isImageUploaded
-                                      ? 'Image Uploaded'
-                                      : 'Upload Photo',
+                                      ? 'Photo uploaded'
+                                      : 'Upload photo',
                                   style: const TextStyle(
                                     fontSize: 22,
                                     color: Color(0xFF616161),
@@ -656,26 +656,65 @@ class _DistributeFormState extends State<DistributeForm> {
                             ),
                           ),
                         ),
+                        // preview image in box
+                        isImageUploaded
+                            ? Container(
+                                margin: EdgeInsets.only(top: 10),
+                                height: 180,
+                                width: 180,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: const Color(
+                                        0xffff3333), // Set the color of the border
+                                    width: 2, // Set the width of the border
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: FileImage(image!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
                 ],
               ),
-              Container(
-                  padding:
-                      // calculate mobile screen height and divide it by 2
-                      EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 100,
+              isImageUploaded
+                  ? Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 30,
                           bottom: 20),
-                  child: MainButton(
-                    initialTitle: 'Submit',
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        _submitForm();
-                        print('Form is valid');
-                      }
-                    },
-                  ))
+                      child: MainButton(
+                        initialTitle: 'Submit',
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            _submitForm();
+                            print('Form is valid');
+                          }
+                        },
+                      ))
+                  : Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 20),
+                      child: MainButton(
+                        initialTitle: 'Add',
+                        onPressed: () {
+                          if (formKey.currentState!.validate() &&
+                              isImageUploaded) {
+                            _submitForm();
+                            print('Form is valid');
+                          } else {
+                            Get.snackbar('Error', 'Please upload photo');
+                          }
+                        },
+                      ))
             ],
           ),
         ),

@@ -270,7 +270,9 @@ class _RestroMenuState extends State<RestroMenu> {
                 height: 12,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed('/RestroPendingReq');
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
