@@ -82,7 +82,8 @@ flutter:
     - assets/logo/
     - assets/users/
     - assets/mis/
-    - assets/model/
+    - assets/model/labels.txt
+    - assets/model/model.tflite
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

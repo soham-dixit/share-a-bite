@@ -195,8 +195,8 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
-      // detectImage(imageTemp);
-      // uploadImage();
+      detectImage(imageTemp);
+      uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -210,8 +210,8 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
-      // detectImage(imageTemp);
-      // uploadImage();
+      detectImage(imageTemp);
+      uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -322,7 +322,7 @@ class _DistributeFormState extends State<DistributeForm> {
   void initState() {
     super.initState();
     _getCurrentPosition();
-    // loadModel();
+    loadModel();
   }
 
   Future<bool> _handleLocationPermission() async {
@@ -383,7 +383,7 @@ class _DistributeFormState extends State<DistributeForm> {
                       Text(
                         'Distribute Excess Food',
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 26,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Poppins',
                           color: Color(0xFF4F200D),
