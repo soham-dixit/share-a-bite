@@ -44,6 +44,7 @@ class _DistributeFormState extends State<DistributeForm> {
   String longitude = '';
   var newChildKey = '';
   String? name = '';
+  bool isFresh = true;
 
   final locationValidator = MultiValidator([
     RequiredValidator(errorText: 'Please enter your location'),
@@ -231,6 +232,14 @@ class _DistributeFormState extends State<DistributeForm> {
       predictions = prediction!;
     });
     print('prediction: $predictions');
+    if (predictions[0]['label'].contains('rotten')) {
+      isFresh = false;
+      // clear predictions
+      predictions = [];
+    } else {
+      isFresh = true;
+      predictions = [];
+    }
     return;
   }
 
@@ -723,9 +732,12 @@ class _DistributeFormState extends State<DistributeForm> {
                       child: MainButton(
                         initialTitle: 'Submit',
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
+                          if (formKey.currentState!.validate() &&
+                              isFresh == true) {
                             _submitForm();
                             print('Form is valid');
+                          } else {
+                            Get.snackbar('Error', 'Please donate eatable food');
                           }
                         },
                       ))
@@ -733,10 +745,11 @@ class _DistributeFormState extends State<DistributeForm> {
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height / 20),
                       child: MainButton(
-                        initialTitle: 'Add',
+                        initialTitle: 'Submit',
                         onPressed: () {
                           if (formKey.currentState!.validate() &&
-                              isImageUploaded) {
+                              isImageUploaded &&
+                              isFresh == true) {
                             _submitForm();
                             print('Form is valid');
                           } else {
