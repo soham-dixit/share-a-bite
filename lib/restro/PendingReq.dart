@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/restro/PendingReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +18,7 @@ class RestroPendingReq extends StatefulWidget {
 
 class _RestroPendingReqState extends State<RestroPendingReq> {
   String? uid = '';
-  dynamic keys_list = [];
+  List keys_list = [];
   dynamic pending_list = [];
   int pendingCount = 0;
   String? key;
@@ -30,21 +31,56 @@ class _RestroPendingReqState extends State<RestroPendingReq> {
     uid = prefs.getString('uid');
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
-    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    keys_list = databaseData['restaurants'][uid]['distribution']['pending']
-        .keys
-        .toList();
-    // print(keys_list);
-    pendingListData.clear();
 
-    if (databaseData['restaurants'] != null) {
-      for (String key in keys_list) {
+    if (event.snapshot.value == null) {
+      // Handle the case where no data is available
+      print("No data available");
+      return []; // Return an empty list or handle the error accordingly
+    }
+
+    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+    // List<dynamic> keys_list = [];
+
+    if (databaseData['restaurants'] != null &&
+        databaseData['restaurants'][uid]['distribution'] != null &&
+        databaseData['restaurants'][uid]['distribution']['pending'] != null) {
+      keys_list = databaseData['restaurants'][uid]['distribution']['pending']
+          .keys
+          .toList();
+    }
+
+    if (databaseData['restaurants'] != null &&
+        databaseData['restaurants'][uid]['distribution'] != null &&
+        databaseData['restaurants'][uid]['distribution']['accepted'] != null) {
+      keys_list = databaseData['restaurants'][uid]['distribution']['accepted']
+          .keys
+          .toList();
+    }
+
+    // print(keys_list[0]);
+
+    List<dynamic> pendingListData = [];
+
+    for (String key in keys_list) {
+      if (databaseData['restaurants'][uid]['distribution']['pending'] != null) {
         dynamic pendingData =
             databaseData['restaurants'][uid]['distribution']['pending'][key];
-        pendingListData.addAll(pendingData.values.toList());
+        if (pendingData != null) {
+          pendingListData.addAll(pendingData.values.toList());
+        }
       }
     }
-    // print('pending list data $pendingListData');
+
+    for (String key in keys_list) {
+      if (databaseData['restaurants'][uid]['distribution']['accepted'] !=
+          null) {
+        dynamic acceptedData =
+            databaseData['restaurants'][uid]['distribution']['accepted'][key];
+        if (acceptedData != null) {
+          pendingListData.addAll(acceptedData.values.toList());
+        }
+      }
+    }
 
     print(pendingListData.length);
 
@@ -118,7 +154,11 @@ class _RestroPendingReqState extends State<RestroPendingReq> {
                                             shelfLife:
                                                 snapshot.data[10 * i + 7],
                                             status: snapshot.data[10 * i + 9],
-                                            onPress: () {});
+                                            onPress: () {
+                                              Get.to(() =>
+                                                  PendingReqDetailsRestro(
+                                                      id: keys_list[i]));
+                                            });
                                       },
                                     );
                                   } else {

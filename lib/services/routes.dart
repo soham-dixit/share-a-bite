@@ -34,6 +34,7 @@ import 'package:share_a_bite/recycling_unit/RuRegister.dart';
 import 'package:share_a_bite/recycling_unit/RuVerify.dart';
 import 'package:share_a_bite/restro/DistributeForm.dart';
 import 'package:share_a_bite/restro/PendingReq.dart';
+import 'package:share_a_bite/restro/PendingReqDetails.dart';
 import 'package:share_a_bite/restro/RestroHome.dart';
 import 'package:share_a_bite/restro/RestroVerify.dart';
 import 'package:share_a_bite/restro/menu.dart';
@@ -268,7 +269,15 @@ appRoutes() => [
       ),
       GetPage(
         name: '/NavVol',
-        page: () => NavVol(lat: '', long: '',),
+        page: () => NavVol(
+          lat: '',
+          long: '',
+        ),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/PendingReqDetailsRestro',
+        page: () => const PendingReqDetailsRestro(id: '',),
         middlewares: [MyMiddelware()],
       ),
     ];
