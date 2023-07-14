@@ -42,7 +42,7 @@ class _NgoHomeState extends State<NgoHome> {
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.120),
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.080),
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -55,7 +55,9 @@ class _NgoHomeState extends State<NgoHome> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            padding: EdgeInsets.only(
+                top: // 0.0
+                    MediaQuery.of(context).size.height * 0.010),
             child: FutureBuilder<DataSnapshot>(
               future: getUserDetails(),
               builder:
@@ -101,10 +103,10 @@ class _NgoHomeState extends State<NgoHome> {
                       elevation: 0,
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text(
-                            'Hi, $name',
-                            style: const TextStyle(
+                            'NGO Operator',
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,

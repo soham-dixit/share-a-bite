@@ -18,6 +18,7 @@ import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
 import 'package:share_a_bite/ngo_operator/NgoVerify.dart';
 import 'package:share_a_bite/ngo_operator/PendingReq.dart';
+import 'package:share_a_bite/ngo_operator/PendingReqDetails.dart';
 import 'package:share_a_bite/ngo_operator/menu.dart';
 import 'package:share_a_bite/ngo_volunteer/AcceptedReq.dart';
 import 'package:share_a_bite/ngo_volunteer/PendingReq.dart';
@@ -277,7 +278,16 @@ appRoutes() => [
       ),
       GetPage(
         name: '/PendingReqDetailsRestro',
-        page: () => const PendingReqDetailsRestro(id: '',),
+        page: () => const PendingReqDetailsRestro(
+          id: '',
+        ),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/PendingReqDetailsOp',
+        page: () => const PendingReqOpDetails(
+          id: '',
+        ),
         middlewares: [MyMiddelware()],
       ),
     ];

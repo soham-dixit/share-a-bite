@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/ngo_operator/PendingReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,9 +69,11 @@ class _PendingReqState extends State<PendingReq> {
     }
 
     for (var i = 0; i < nearest_list.length; i++) {
-      if (databaseData['restaurants'][nearest_list[i]]['distribution']
-              ['pending'] !=
-          null) {
+      if (databaseData['restaurants'][nearest_list[i]]['distribution'] !=
+              null &&
+          databaseData['restaurants'][nearest_list[i]]['distribution']
+                  ['pending'] !=
+              null) {
         pending_list = databaseData['restaurants'][nearest_list[i]]
                 ['distribution']['pending']
             .keys
@@ -82,15 +85,22 @@ class _PendingReqState extends State<PendingReq> {
     print('pending list $pending_list');
     pendingListData = [];
 
-    if (databaseData['restaurants'] != null) {
+if (databaseData['restaurants'] != null) {
       for (String key in nearest_list) {
-        for (String pendingKey in pending_list) {
-          dynamic pendingData = databaseData['restaurants'][key]['distribution']
-              ['pending'][pendingKey];
-          pendingListData.addAll(pendingData.values.toList());
+        if (databaseData['restaurants'][key]['distribution'] != null &&
+            databaseData['restaurants'][key]['distribution']['pending'] !=
+                null) {
+          for (String pendingKey in pending_list) {
+            dynamic pendingData = databaseData['restaurants'][key]
+                ['distribution']['pending'][pendingKey];
+            if (pendingData != null) {
+              pendingListData.addAll(pendingData.values.toList());
+            }
+          }
         }
       }
     }
+
 
     print('pending list data $pendingListData');
 
@@ -197,7 +207,11 @@ class _PendingReqState extends State<PendingReq> {
                                             shelfLife:
                                                 snapshot.data[10 * i + 7],
                                             status: snapshot.data[10 * i + 9],
-                                            onPress: () {});
+                                            onPress: () {
+                                              Get.to(() => PendingReqOpDetails(
+                                                    id: pending_list[i],
+                                                  ));
+                                            });
                                       },
                                     );
                                   } else {
