@@ -24,19 +24,24 @@ class _AcceptedReqVolState extends State<AcceptedReqVol> {
   List data = [];
   var result;
 
-  getData() async {
+getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid = prefs.getString('uid');
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
-    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    keys_list = databaseData['volunteers'][uid]['distribution']['accepted']
-        .keys
-        .toList();
+    Map<dynamic, dynamic>? databaseData = event.snapshot.value as Map?;
+    keys_list = databaseData?['volunteers']?[uid]?['distribution']?['accepted']
+            ?.keys
+            ?.toList() ??
+        [];
     // print(keys_list);
     pendingListData.clear();
 
-    if (databaseData['volunteers'] != null) {
+    if (databaseData != null &&
+        databaseData['volunteers'] != null &&
+        databaseData['volunteers'][uid] != null &&
+        databaseData['volunteers'][uid]['distribution'] != null &&
+        databaseData['volunteers'][uid]['distribution']['accepted'] != null) {
       for (String key in keys_list) {
         dynamic pendingData =
             databaseData['volunteers'][uid]['distribution']['accepted'][key];
@@ -49,6 +54,7 @@ class _AcceptedReqVolState extends State<AcceptedReqVol> {
 
     return pendingListData;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -111,12 +117,12 @@ class _AcceptedReqVolState extends State<AcceptedReqVol> {
                                       itemBuilder: (context, i) {
                                         return ReqCard(
                                             restroName:
-                                                snapshot.data[10 * i + 8],
-                                            foodName: snapshot.data[10 * i + 7],
-                                            foodType: snapshot.data[10 * i + 5],
+                                                snapshot.data[10 * i + 6],
+                                            foodName: snapshot.data[10 * i + 0],
+                                            foodType: snapshot.data[10 * i + 3],
                                             shelfLife:
-                                                snapshot.data[10 * i + 2],
-                                            status: snapshot.data[10 * i + 3],
+                                                snapshot.data[10 * i + 7],
+                                            status: snapshot.data[10 * i + 9],
                                             onPress: () {
                                               Get.to(() => AcceptedReqDetails(
                                                   id: keys_list[i]));

@@ -1,9 +1,12 @@
+import 'dart:ffi';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/ngo_volunteer/navigate.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -357,7 +360,12 @@ class _AcceptedReqDetailsState extends State<AcceptedReqDetails> {
                                   child: MainButton(
                                     initialTitle: 'Navigate',
                                     onPressed: () {
-                                      // _accept();
+                                      String lat = data['latitude'].toString();
+                                      String long = data['longitude'].toString();
+                                      Get.to(() => NavVol(
+                                            lat: lat,
+                                            long: long,
+                                          ));
                                     },
                                   )),
                               Container(
