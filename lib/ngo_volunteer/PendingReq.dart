@@ -167,12 +167,12 @@ class _VolPendingReqState extends State<VolPendingReq> {
                                       itemBuilder: (context, i) {
                                         return ReqCard(
                                             restroName:
-                                                snapshot.data[10 * i + 8],
-                                            foodName: snapshot.data[10 * i + 7],
-                                            foodType: snapshot.data[10 * i + 5],
+                                                snapshot.data[10 * i + 6],
+                                            foodName: snapshot.data[10 * i + 0],
+                                            foodType: snapshot.data[10 * i + 3],
                                             shelfLife:
-                                                snapshot.data[10 * i + 2],
-                                            status: snapshot.data[10 * i + 3],
+                                                snapshot.data[10 * i + 7],
+                                            status: snapshot.data[10 * i + 9],
                                             onPress: () {
                                               Get.to(() => PendingReqDetailsVol(
                                                   id: pending_list[i]));

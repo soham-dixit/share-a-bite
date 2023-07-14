@@ -31,15 +31,21 @@ class _ListVolunteersState extends State<ListVolunteers> {
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
     Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    keys_list = databaseData['ngo'][uid]['volunteers'].keys.toList();
 
-    data.clear();
+    if (databaseData != null &&
+        databaseData['ngo'] != null &&
+        databaseData['ngo'][uid] != null &&
+        databaseData['ngo'][uid]['volunteers'] != null) {
+      keys_list = databaseData['ngo'][uid]['volunteers'].keys.toList();
 
-    if (databaseData['ngo'] != null) {
+      data.clear();
+
       for (String key in keys_list) {
         dynamic volData = databaseData['ngo'][uid]['volunteers'][key];
         data.addAll(volData.values.toList());
       }
+    } else {
+      print('Error: Invalid databaseData');
     }
 
     print(data.length);
@@ -108,7 +114,7 @@ class _ListVolunteersState extends State<ListVolunteers> {
                                       itemBuilder: (context, i) {
                                         return VolunteerCard(
                                             name: snapshot.data[4 * i + 1],
-                                            email: snapshot.data[4 * i + 2],
+                                            email: snapshot.data[4 * i + 3],
                                             phone: snapshot.data[4 * i + 0],
                                             onPress: () {});
                                       },

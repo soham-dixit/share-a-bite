@@ -166,7 +166,7 @@ class _ReqCardState extends State<ReqCard> {
                     // Assigned employee
                     Row(children: [
                       const Icon(
-                        Icons.person_2_outlined,
+                        Icons.fastfood,
                         size: 12,
                       ),
                       const SizedBox(
