@@ -6,7 +6,6 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:share_a_bite/grocery_store/PendingReqDetails.dart';
-import 'package:share_a_bite/restro/PendingReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +17,14 @@ class PendingReqGrocery extends StatefulWidget {
 }
 
 class _PendingReqGroceryState extends State<PendingReqGrocery> {
+class GroceryPendingReq extends StatefulWidget {
+  const GroceryPendingReq({super.key});
+
+  @override
+  State<GroceryPendingReq> createState() => _GroceryPendingReqState();
+}
+
+class _GroceryPendingReqState extends State<GroceryPendingReq> {
   String? uid = '';
   List keys_list = [];
   dynamic pending_list = [];
@@ -55,6 +62,18 @@ class _PendingReqGroceryState extends State<PendingReqGrocery> {
         databaseData['grocery'][uid]['distribution'] != null &&
         databaseData['grocery'][uid]['distribution']['accepted'] != null) {
       keys_list = databaseData['grocery'][uid]['distribution']['accepted']
+    if (databaseData['restaurants'] != null &&
+        databaseData['restaurants'][uid]['distribution'] != null &&
+        databaseData['restaurants'][uid]['distribution']['pending'] != null) {
+      keys_list = databaseData['restaurants'][uid]['distribution']['pending']
+          .keys
+          .toList();
+    }
+
+    if (databaseData['restaurants'] != null &&
+        databaseData['restaurants'][uid]['distribution'] != null &&
+        databaseData['restaurants'][uid]['distribution']['accepted'] != null) {
+      keys_list = databaseData['restaurants'][uid]['distribution']['accepted']
           .keys
           .toList();
     }
@@ -67,6 +86,9 @@ class _PendingReqGroceryState extends State<PendingReqGrocery> {
       if (databaseData['grocery'][uid]['distribution']['pending'] != null) {
         dynamic pendingData =
             databaseData['grocery'][uid]['distribution']['pending'][key];
+      if (databaseData['restaurants'][uid]['distribution']['pending'] != null) {
+        dynamic pendingData =
+        databaseData['restaurants'][uid]['distribution']['pending'][key];
         if (pendingData != null) {
           pendingListData.addAll(pendingData.values.toList());
         }
@@ -77,15 +99,18 @@ class _PendingReqGroceryState extends State<PendingReqGrocery> {
       if (databaseData['grocery'][uid]['distribution']['accepted'] != null) {
         dynamic acceptedData =
             databaseData['grocery'][uid]['distribution']['accepted'][key];
+      if (databaseData['restaurants'][uid]['distribution']['accepted'] !=
+          null) {
+        dynamic acceptedData =
+        databaseData['restaurants'][uid]['distribution']['accepted'][key];
         if (acceptedData != null) {
           pendingListData.addAll(acceptedData.values.toList());
         }
       }
     }
 
-    // print(pendingListData.length);
-
     print(pendingListData);
+    print(pendingListData.length);
 
     return pendingListData;
   }
@@ -159,6 +184,19 @@ class _PendingReqGroceryState extends State<PendingReqGrocery> {
                                             onPress: () {
                                               Get.to(() =>
                                                   PendingReqDetailsGrocery(
+                                      (snapshot.data.length / 10).floor(),
+                                      itemBuilder: (context, i) {
+                                        return ReqCard(
+                                            restroName:
+                                            snapshot.data[10 * i + 6],
+                                            foodName: snapshot.data[10 * i + 0],
+                                            foodType: snapshot.data[10 * i + 3],
+                                            shelfLife:
+                                            snapshot.data[10 * i + 7],
+                                            status: snapshot.data[10 * i + 9],
+                                            onPress: () {
+                                              Get.to(() =>
+                                                  PendingReqDetailsRestro(
                                                       id: keys_list[i]));
                                             });
                                       },
