@@ -311,7 +311,7 @@ appRoutes() => [
       ),
       GetPage(
         name: '/PendingReqGrocery',
-        page: () => const PendingReqGrocery(),
+        page: () => const GroceryPendingReq(),
         middlewares: [MyMiddelware()],
       ),
     ];
