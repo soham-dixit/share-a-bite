@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/ngo_volunteer/VolHome.dart';
 import 'package:share_a_bite/ngo_volunteer/navigate.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,7 @@ class AcceptedReqDetails extends StatefulWidget {
 class _AcceptedReqDetailsState extends State<AcceptedReqDetails> {
   Map<String, dynamic> data = {};
   final formKey = GlobalKey<FormState>();
+  List<dynamic> keys_list = [];
 
   getDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -40,6 +42,81 @@ class _AcceptedReqDetailsState extends State<AcceptedReqDetails> {
         });
       }
     }
+  }
+
+  getRestro() async {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseEvent event = await databaseReference.once();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
+    keys_list = databaseData['restaurants'].keys.toList();
+    print(keys_list);
+    print(keys_list.length);
+
+    if (databaseData['restaurants'] != null) {
+      for (String token in keys_list) {
+        // check if id is present in [token][distribution][accepted]
+        if (databaseData['restaurants'][token]['distribution']['accepted'] !=
+            null) {
+          // check if id is present in [token][distribution][accepted][id]
+          if (databaseData['restaurants'][token]['distribution']['accepted']
+                  [widget.id] !=
+              null) {
+            // check if id is present in [token][distribution][accepted][id]
+            if (databaseData['restaurants'][token]['distribution']['accepted']
+                    [widget.id]['status'] ==
+                'accepted') {
+              data['status'] = 'completed';
+              databaseReference
+                  .child('restaurants')
+                  .child(token)
+                  .child('distribution')
+                  .child('completed')
+                  .child(widget.id)
+                  .set(data);
+
+              print(data);
+              databaseReference
+                  .child('volunteers')
+                  .child(uid!)
+                  .child('distribution')
+                  .child('completed')
+                  .child(widget.id)
+                  .set(data);
+
+              // remove from accepted
+              databaseReference
+                  .child('restaurants')
+                  .child(token)
+                  .child('distribution')
+                  .child('accepted')
+                  .child(widget.id)
+                  .remove();
+
+              //remove from pending
+              databaseReference
+                  .child('volunteers')
+                  .child(uid)
+                  .child('distribution')
+                  .child('accepted')
+                  .child(widget.id)
+                  .remove();
+
+              Get.offAll(() => const VolHome());
+              Get.snackbar('Success', 'Request Completed');
+            }
+          }
+        }
+      }
+    }
+  }
+
+  _complete() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uid = prefs.getString('uid');
+    // data['status'] = 'completed';
+    getRestro();
   }
 
   @override
@@ -361,7 +438,8 @@ class _AcceptedReqDetailsState extends State<AcceptedReqDetails> {
                                     initialTitle: 'Navigate',
                                     onPressed: () {
                                       String lat = data['latitude'].toString();
-                                      String long = data['longitude'].toString();
+                                      String long =
+                                          data['longitude'].toString();
                                       Get.to(() => NavVol(
                                             lat: lat,
                                             long: long,
@@ -373,9 +451,9 @@ class _AcceptedReqDetailsState extends State<AcceptedReqDetails> {
                                       top: MediaQuery.of(context).size.height /
                                           50),
                                   child: MainButton(
-                                    initialTitle: 'Chat',
+                                    initialTitle: 'Mark as complete',
                                     onPressed: () {
-                                      // _accept();
+                                      _complete();
                                     },
                                   )),
                               SizedBox(

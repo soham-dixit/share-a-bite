@@ -41,7 +41,7 @@ class _VolHomeState extends State<VolHome> {
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.120),
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.080),
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -54,7 +54,9 @@ class _VolHomeState extends State<VolHome> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            padding: EdgeInsets.only(
+                top: // 0.0
+                    MediaQuery.of(context).size.height * 0.010),
             child: FutureBuilder<DataSnapshot>(
               future: getUserDetails(),
               builder:
@@ -90,9 +92,9 @@ class _VolHomeState extends State<VolHome> {
                   );
                 } else {
                   if (snapshot.hasData && snapshot.data!.value != null) {
-                    dynamic data = snapshot.data!.value;
-                    String name = data['name'];
-                    String phoneNumber = data['phone'];
+                    // dynamic data = snapshot.data!.value;
+                    // String name = data['name'];
+                    // String phoneNumber = data['phone'];
 
                     return AppBar(
                       automaticallyImplyLeading: false,
@@ -100,9 +102,9 @@ class _VolHomeState extends State<VolHome> {
                       elevation: 0,
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text(
-                            'Hi, $name',
+                            'NGO Volunteer',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
@@ -281,7 +283,9 @@ class _VolHomeState extends State<VolHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/CompletedReqVol');
+                      },
                       child: Container(
                         width: 300,
                         height: 150,

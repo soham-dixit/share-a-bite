@@ -1,121 +1,65 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:geolocator/geolocator.dart' as geolocator;
-import 'package:share_a_bite/ngo_volunteer/PendingReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class VolPendingReq extends StatefulWidget {
-  const VolPendingReq({super.key});
+class CompletedReqVol extends StatefulWidget {
+  const CompletedReqVol({super.key});
 
   @override
-  State<VolPendingReq> createState() => _VolPendingReqState();
+  State<CompletedReqVol> createState() => _CompletedReqVolState();
 }
 
-class _VolPendingReqState extends State<VolPendingReq> {
-  String? uid = '';
-  List latitudes = [];
-  List longitudes = [];
-  List keys_list = [];
-  dynamic nearest_list = [];
-  dynamic pending_list = [];
-  String? key;
-  int pendingCount = 0;
-  List<dynamic> pendingListData = [];
-  List data = [];
-  var result;
-
-  getRestroLocation() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    uid = prefs.getString('uid');
-    final databaseReference = FirebaseDatabase.instance.ref();
-    DatabaseEvent event = await databaseReference.once();
-    Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
-    keys_list = databaseData['restaurants'].keys.toList();
-
-    if (databaseData['restaurants'] != null) {
-      for (int i = 0; i < keys_list.length; i++) {
-        key = keys_list[i];
-        if (databaseData['restaurants'][keys_list[i]]['latitude'] != null) {
-          latitudes.add(databaseData['restaurants'][keys_list[i]]['latitude']);
-        }
-        if (databaseData['restaurants'][keys_list[i]]['longitude'] != null) {
-          longitudes
-              .add(databaseData['restaurants'][keys_list[i]]['longitude']);
-        }
-      }
-    }
-
-    print('latitudes $latitudes');
-    print('longitudes $longitudes');
-
-    nearest_list.clear();
-
-    for (var i = 0; i < latitudes.length; i++) {
-      geolocator.Position position =
-          await geolocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: geolocator.LocationAccuracy.high);
-      double distanceInMeters = geolocator.Geolocator.distanceBetween(
-          position.latitude, position.longitude, latitudes[i], longitudes[i]);
-      print('distance in meters $distanceInMeters');
-      if (distanceInMeters < 10000) {
-        if (i < keys_list.length) {
-          nearest_list.add(keys_list[i]);
-        }
-      } else {
-        print('restro is not in 10km radius');
-      }
-    }
-
-    for (var i = 0; i < nearest_list.length; i++) {
-      if (databaseData['restaurants'][nearest_list[i]]['distribution']
-              ['pending'] !=
-          null) {
-        pending_list = databaseData['restaurants'][nearest_list[i]]
-                ['distribution']['pending']
-            .keys
-            .toList();
-      }
-    }
-
-    print('nearest list $nearest_list');
-    print('pending list $pending_list');
-    pendingListData = [];
-
-    if (databaseData['restaurants'] != null) {
-      for (String key in nearest_list) {
-        Map<dynamic, dynamic>? distribution =
-            databaseData['restaurants'][key]?['distribution'];
-        if (distribution != null) {
-          Map<dynamic, dynamic>? pending = distribution['pending'];
-          if (pending != null) {
-            for (String pendingKey in pending_list) {
-              dynamic pendingData = pending[pendingKey];
-              if (pendingData != null) {
-                pendingListData.addAll(pendingData.values.toList());
-              }
-            }
-          }
-        }
-      }
-    }
-
-    print('pending list data $pendingListData');
-
-    print(pendingListData.length);
-
-    return pendingListData;
-  }
-
-  test() {
-    print('card pressed');
-  }
-
+class _CompletedReqVolState extends State<CompletedReqVol> {
   @override
   Widget build(BuildContext context) {
+    String? uid = '';
+    dynamic keys_list = [];
+    dynamic pending_list = [];
+    int pendingCount = 0;
+    String? key;
+    List<dynamic> pendingListData = [];
+    List data = [];
+    var result;
+
+    getData() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      uid = prefs.getString('uid');
+      final databaseReference = FirebaseDatabase.instance.ref();
+      DatabaseEvent event = await databaseReference.once();
+      Map<dynamic, dynamic>? databaseData = event.snapshot.value as Map?;
+      keys_list = databaseData?['volunteers']?[uid]?['distribution']
+                  ?['completed']
+              ?.keys
+              ?.toList() ??
+          [];
+      // print(keys_list);
+      pendingListData.clear();
+
+      if (databaseData != null &&
+          databaseData['volunteers'] != null &&
+          databaseData['volunteers'][uid] != null &&
+          databaseData['volunteers'][uid]['distribution'] != null &&
+          databaseData['volunteers'][uid]['distribution']['completed'] !=
+              null) {
+        for (String key in keys_list) {
+          dynamic pendingData =
+              databaseData['volunteers'][uid]['distribution']['completed'][key];
+          pendingListData.addAll(pendingData.values.toList());
+        }
+      }
+      // print('pending list data $pendingListData');
+
+      print(pendingListData.length);
+
+      return pendingListData;
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -141,7 +85,7 @@ class _VolPendingReqState extends State<VolPendingReq> {
                       height: 33,
                     ),
                     const Text(
-                      'Pending Requests',
+                      'Completed Requests',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
@@ -154,7 +98,7 @@ class _VolPendingReqState extends State<VolPendingReq> {
                     SingleChildScrollView(
                       child: Column(children: [
                         FutureBuilder(
-                            future: getRestroLocation(),
+                            future: getData(),
                             builder: (context, AsyncSnapshot snapshot) {
                               switch (snapshot.connectionState) {
                                 case ConnectionState.waiting:
@@ -181,10 +125,7 @@ class _VolPendingReqState extends State<VolPendingReq> {
                                             shelfLife:
                                                 snapshot.data[10 * i + 7],
                                             status: snapshot.data[10 * i + 9],
-                                            onPress: () {
-                                              Get.to(() => PendingReqDetailsVol(
-                                                  id: pending_list[i]));
-                                            });
+                                            onPress: () {});
                                       },
                                     );
                                   } else {

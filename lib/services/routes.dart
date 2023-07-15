@@ -13,6 +13,7 @@ import 'package:share_a_bite/login/RestroLogin.dart';
 import 'package:share_a_bite/login/RuDeliveryLogin.dart';
 import 'package:share_a_bite/login/RuOpLogin.dart';
 import 'package:share_a_bite/ngo_operator/AddVolunteer.dart';
+import 'package:share_a_bite/ngo_operator/CompletedReq.dart';
 import 'package:share_a_bite/ngo_operator/ListVolunteers.dart';
 import 'package:share_a_bite/ngo_operator/NgoHome.dart';
 import 'package:share_a_bite/ngo_operator/NgoRegister.dart';
@@ -21,6 +22,7 @@ import 'package:share_a_bite/ngo_operator/PendingReq.dart';
 import 'package:share_a_bite/ngo_operator/PendingReqDetails.dart';
 import 'package:share_a_bite/ngo_operator/menu.dart';
 import 'package:share_a_bite/ngo_volunteer/AcceptedReq.dart';
+import 'package:share_a_bite/ngo_volunteer/CompletedReq.dart';
 import 'package:share_a_bite/ngo_volunteer/PendingReq.dart';
 import 'package:share_a_bite/ngo_volunteer/PendingReqDetails.dart';
 import 'package:share_a_bite/ngo_volunteer/VolHome.dart';
@@ -288,6 +290,16 @@ appRoutes() => [
         page: () => const PendingReqOpDetails(
           id: '',
         ),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/CompletedReqVol',
+        page: () => const CompletedReqVol(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/CompletedReqOp',
+        page: () => const CompletedReqOp(),
         middlewares: [MyMiddelware()],
       ),
     ];

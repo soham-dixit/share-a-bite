@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/ngo_operator/CompletedReq.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -276,7 +277,8 @@ class _NgoHomeState extends State<NgoHome> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        setState(() {});
+                        // setState(() {});
+                        Get.to(() => const CompletedReqOp());
                       },
                       child: Container(
                         width: 150,

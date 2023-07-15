@@ -222,7 +222,7 @@ class _ReqCardState extends State<ReqCard> {
                             : widget.status == 'accepted'
                                 ? const Color.fromRGBO(89, 195, 106, 0.08)
                                 : widget.status == 'completed'
-                                    ? const Color.fromRGBO(244, 73, 15, 0.08)
+                                    ? Color.fromARGB(19, 77, 105, 206)
                                     : const Color.fromRGBO(255, 204, 0, 0.08),
 
                         borderRadius:
@@ -239,7 +239,7 @@ class _ReqCardState extends State<ReqCard> {
                               : widget.status == 'accepted'
                                   ? Color.fromARGB(255, 16, 157, 40)
                                   : widget.status == 'completed'
-                                      ? const Color.fromRGBO(244, 73, 15, 0.08)
+                                      ? Color.fromARGB(255, 15, 68, 244)
                                       : const Color.fromRGBO(244, 73, 15, 0.08),
                         ),
                       ),

@@ -27,17 +27,18 @@ class _PendingReqDetailsVolState extends State<PendingReqDetailsVol> {
     Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
     keys_list = databaseData['restaurants'].keys.toList();
 
+    print(keys_list);
+    print(keys_list.length);
+
     if (databaseData['restaurants'] != null) {
-      for (int i = 0; i < keys_list.length; i++) {
-        key = keys_list[i];
-        checkNode(key!).then((value) {
-          if (value) {
-            restroKey = key!;
-            getDetails(restroKey);
-          } else {
-            print('false');
-          }
-        });
+      for (String token in keys_list) {
+        bool hasPendingNode = await checkNode(token);
+        if (hasPendingNode) {
+          restroKey = token;
+          getDetails(restroKey);
+        } else {
+          print('no data');
+        }
       }
     }
   }
@@ -88,6 +89,8 @@ class _PendingReqDetailsVolState extends State<PendingReqDetailsVol> {
         .child('accepted')
         .child(widget.id)
         .set(data);
+
+    Get.back();
   }
 
   Future<bool> checkNode(String token) async {
