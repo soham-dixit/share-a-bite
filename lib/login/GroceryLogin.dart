@@ -160,7 +160,7 @@ class _GroceryLoginState extends State<GroceryLogin> {
                 height: 18,
               ),
               const Text(
-                'Login as Grocery store',
+                'Login as Grocery Store',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 26,
