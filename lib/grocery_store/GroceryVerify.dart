@@ -233,6 +233,8 @@ class _GroceryVerify2State extends State<GroceryVerify2> {
         .createUserWithEmailAndPassword(
             email: widget.email, password: widget.password);
 
+    await userCredential.user!.updateDisplayName(widget.name);
+
     saveInfo();
   }
 

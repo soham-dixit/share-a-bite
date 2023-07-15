@@ -241,7 +241,7 @@ class _GroceryMenuState extends State<GroceryMenu> {
               ),
               GestureDetector(
                 onTap: () {
-                  // Get.toNamed('/DistributeForm');
+                  Get.toNamed('/GroceryForm');
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,7 +270,9 @@ class _GroceryMenuState extends State<GroceryMenu> {
                 height: 12,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed('/PendingReqGrocery');
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [

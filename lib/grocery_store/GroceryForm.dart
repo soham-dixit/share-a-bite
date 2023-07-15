@@ -18,11 +18,11 @@ import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tflite/tflite.dart';
 
-class DistributeForm extends StatefulWidget {
-  const DistributeForm({super.key});
+class DistributeFormGrocery extends StatefulWidget {
+  const DistributeFormGrocery({super.key});
 
   @override
-  State<DistributeForm> createState() => _DistributeFormState();
+  State<DistributeFormGrocery> createState() => _DistributeFormGroceryState();
 }
 
 final TextEditingController _locationController = TextEditingController();
@@ -32,7 +32,7 @@ final TextEditingController _quantityController = TextEditingController();
 final TextEditingController _shelfLifeController = TextEditingController();
 final TextEditingController _photoController = TextEditingController();
 
-class _DistributeFormState extends State<DistributeForm> {
+class _DistributeFormGroceryState extends State<DistributeFormGrocery> {
   final formKey = GlobalKey<FormState>();
   List predictions = [];
   bool _loading = true;
@@ -63,7 +63,7 @@ class _DistributeFormState extends State<DistributeForm> {
   ]);
 
   final shelfLifeValidator = MultiValidator([
-    RequiredValidator(errorText: 'Please enter shelf life'),
+    RequiredValidator(errorText: 'Please enter expiry date'),
   ]);
 
   final List<String> foodTypes = [
@@ -196,7 +196,7 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
-      detectImage(imageTemp);
+      // detectImage(imageTemp);
       uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
@@ -211,7 +211,7 @@ class _DistributeFormState extends State<DistributeForm> {
       final imageTemp = File(image.path);
       setState(() => this.image = imageTemp);
       isImageUploaded = true;
-      detectImage(imageTemp);
+      // detectImage(imageTemp);
       uploadImage();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
@@ -264,7 +264,7 @@ class _DistributeFormState extends State<DistributeForm> {
 
       final databaseReference = FirebaseDatabase.instance.ref();
       final newChildRef = databaseReference
-          .child("restaurants")
+          .child("grocery")
           .child(uid!)
           .child('distribution')
           .child('pending')
@@ -275,15 +275,14 @@ class _DistributeFormState extends State<DistributeForm> {
 
       newChildRef.set({
         'address': _locationController.text,
-        'foodType': selectedValue.toString(),
         'foodName': _foodNameController.text,
         'quantity': _quantityController.text,
-        'shelfLife': _shelfLifeController.text,
+        'expiryDate': _shelfLifeController.text,
         'photo': imageUrl,
         'latitude': intLatitude,
         'longitude': intLongitude,
         'status': 'pending',
-        'restroName': name,
+        'groceryName': name,
       });
 
       print('New child key: $newChildKey');
@@ -309,7 +308,7 @@ class _DistributeFormState extends State<DistributeForm> {
   uploadImage() async {
     if (image != null) {
       final Reference firebaseStorageRef = FirebaseStorage.instance.ref().child(
-          'images/restaurants/distribution/pending/$newChildKey/${DateTime.now().millisecondsSinceEpoch}');
+          'images/grocery/distribution/pending/$newChildKey/${DateTime.now().millisecondsSinceEpoch}');
       final UploadTask task = firebaseStorageRef.putFile(image!);
 
       // Wait for the upload task to complete and get the download URL
@@ -390,7 +389,7 @@ class _DistributeFormState extends State<DistributeForm> {
                   Row(
                     children: const [
                       Text(
-                        'Distribute Expired Food',
+                        'Distribute Excess Food',
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
@@ -465,73 +464,6 @@ class _DistributeFormState extends State<DistributeForm> {
                         ),
                         const SizedBox(
                           height: 15,
-                        ),
-                        DropdownButtonFormField2(
-                          decoration: InputDecoration(
-                            //Add isDense true and zero Padding.
-                            //Add Horizontal padding using buttonPadding and Vertical padding by increasing buttonHeight instead of add Padding here so that The whole TextField Button become clickable, and also the dropdown menu open under The whole TextField Button.
-                            isDense: true,
-                            contentPadding: EdgeInsets.only(left: 0, right: 0),
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.circular(10)),
-                            focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.circular(10)),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black12),
-                                borderRadius: BorderRadius.circular(10)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black12),
-                                borderRadius: BorderRadius.circular(10)),
-                            //Add more decoration as you want here
-                            //Add label If you want but add hint outside the decoration to be aligned in the button perfectly.
-                          ),
-                          isExpanded: true,
-                          hint: const Text(
-                            'Food Type',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF616161),
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black45,
-                          ),
-                          iconSize: 30,
-                          buttonHeight: 60,
-                          buttonPadding:
-                              const EdgeInsets.only(left: 0, right: 15),
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          items: foodTypes
-                              .map((item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'Poppins',
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                          // validator: foodTypeValidator,
-                          onChanged: (value) {
-                            //Do something when changing the item if you want.
-                            selectedValue = value.toString();
-                          },
-                          onSaved: (value) {
-                            selectedValue = value.toString();
-                            controller:
-                            _foodTypeController;
-                          },
-                        ),
-                        SizedBox(
-                          height: 22,
                         ),
                         TextFormField(
                           controller: _foodNameController,
@@ -643,7 +575,7 @@ class _DistributeFormState extends State<DistributeForm> {
                               validator: shelfLifeValidator,
                               cursorColor: Colors.black,
                               decoration: InputDecoration(
-                                label: Text('Shelf life'),
+                                label: Text('Date of Expiry'),
                                 labelStyle: TextStyle(
                                   color: Colors.grey.shade700,
                                 ),

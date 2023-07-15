@@ -189,7 +189,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        setState(() {});
+                        Get.toNamed('/GroceryForm');
                       },
                       child: Container(
                         width: 300,
@@ -234,7 +234,9 @@ class _GroceryHomeState extends State<GroceryHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/PendingReqGrocery');
+                      },
                       child: Container(
                         width: 300,
                         height: 150,
