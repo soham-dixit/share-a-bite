@@ -5,10 +5,18 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:share_a_bite/restro/PendingReqDetails.dart';
+import 'package:share_a_bite/grocery_store/PendingReqDetails.dart';
 import 'package:share_a_bite/widgets/CommonWidgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class PendingReqGrocery extends StatefulWidget {
+  const PendingReqGrocery({super.key});
+
+  @override
+  State<PendingReqGrocery> createState() => _PendingReqGroceryState();
+}
+
+class _PendingReqGroceryState extends State<PendingReqGrocery> {
 class GroceryPendingReq extends StatefulWidget {
   const GroceryPendingReq({super.key});
 
@@ -41,6 +49,19 @@ class _GroceryPendingReqState extends State<GroceryPendingReq> {
     Map<dynamic, dynamic> databaseData = event.snapshot.value as Map;
     // List<dynamic> keys_list = [];
 
+    if (databaseData['grocery'] != null &&
+        databaseData['grocery'][uid]['distribution'] != null &&
+        databaseData['grocery'][uid]['distribution']['pending'] != null) {
+      keys_list =
+          databaseData['grocery'][uid]['distribution']['pending'].keys.toList();
+
+      print(keys_list);
+    }
+
+    if (databaseData['grocery'] != null &&
+        databaseData['grocery'][uid]['distribution'] != null &&
+        databaseData['grocery'][uid]['distribution']['accepted'] != null) {
+      keys_list = databaseData['grocery'][uid]['distribution']['accepted']
     if (databaseData['restaurants'] != null &&
         databaseData['restaurants'][uid]['distribution'] != null &&
         databaseData['restaurants'][uid]['distribution']['pending'] != null) {
@@ -62,6 +83,9 @@ class _GroceryPendingReqState extends State<GroceryPendingReq> {
     List<dynamic> pendingListData = [];
 
     for (String key in keys_list) {
+      if (databaseData['grocery'][uid]['distribution']['pending'] != null) {
+        dynamic pendingData =
+            databaseData['grocery'][uid]['distribution']['pending'][key];
       if (databaseData['restaurants'][uid]['distribution']['pending'] != null) {
         dynamic pendingData =
         databaseData['restaurants'][uid]['distribution']['pending'][key];
@@ -72,6 +96,9 @@ class _GroceryPendingReqState extends State<GroceryPendingReq> {
     }
 
     for (String key in keys_list) {
+      if (databaseData['grocery'][uid]['distribution']['accepted'] != null) {
+        dynamic acceptedData =
+            databaseData['grocery'][uid]['distribution']['accepted'][key];
       if (databaseData['restaurants'][uid]['distribution']['accepted'] !=
           null) {
         dynamic acceptedData =
@@ -82,6 +109,7 @@ class _GroceryPendingReqState extends State<GroceryPendingReq> {
       }
     }
 
+    print(pendingListData);
     print(pendingListData.length);
 
     return pendingListData;
@@ -144,6 +172,18 @@ class _GroceryPendingReqState extends State<GroceryPendingReq> {
                                       physics: BouncingScrollPhysics(),
                                       scrollDirection: Axis.vertical,
                                       itemCount:
+                                          (snapshot.data.length / 9).floor(),
+                                      itemBuilder: (context, i) {
+                                        return ReqCard(
+                                            restroName:
+                                                snapshot.data[9 * i + 6],
+                                            foodName: snapshot.data[9 * i + 1],
+                                            foodType: 'Expired',
+                                            shelfLife: snapshot.data[9 * i + 0],
+                                            status: snapshot.data[9 * i + 8],
+                                            onPress: () {
+                                              Get.to(() =>
+                                                  PendingReqDetailsGrocery(
                                       (snapshot.data.length / 10).floor(),
                                       itemBuilder: (context, i) {
                                         return ReqCard(

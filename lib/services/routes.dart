@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:share_a_bite/grocery_store/GroceryForm.dart';
 import 'package:share_a_bite/grocery_store/GroceryHome.dart';
 import 'package:share_a_bite/grocery_store/GroceryRegister.dart';
 import 'package:share_a_bite/grocery_store/GroceryVerify.dart';
+import 'package:share_a_bite/grocery_store/PendingReq.dart';
 import 'package:share_a_bite/grocery_store/menu.dart';
 import 'package:share_a_bite/login/GroceryLogin.dart';
 import 'package:share_a_bite/login/GuestLogin.dart';
@@ -300,6 +302,16 @@ appRoutes() => [
       GetPage(
         name: '/CompletedReqOp',
         page: () => const CompletedReqOp(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/GroceryForm',
+        page: () => const DistributeFormGrocery(),
+        middlewares: [MyMiddelware()],
+      ),
+      GetPage(
+        name: '/PendingReqGrocery',
+        page: () => const PendingReqGrocery(),
         middlewares: [MyMiddelware()],
       ),
     ];

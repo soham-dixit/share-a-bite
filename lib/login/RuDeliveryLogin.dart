@@ -66,7 +66,7 @@ class _RuDeliveryLoginState extends State<RuDeliveryLogin> {
   checkEmailExists(String email, String password) async {
     final restaurantsRef = FirebaseFirestore.instance.collection('ru');
     final querySnapshot =
-    await restaurantsRef.where('email', isEqualTo: email).get();
+        await restaurantsRef.where('email', isEqualTo: email).get();
     if (querySnapshot.docs.isEmpty) {
       Get.snackbar("Error!", "Please register your account");
     } else {
@@ -95,6 +95,7 @@ class _RuDeliveryLoginState extends State<RuDeliveryLogin> {
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(
                 height: 10,

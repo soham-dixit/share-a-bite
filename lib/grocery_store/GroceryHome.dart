@@ -40,7 +40,7 @@ class _GroceryHomeState extends State<GroceryHome> {
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.120),
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.080),
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -53,7 +53,8 @@ class _GroceryHomeState extends State<GroceryHome> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.010),
             child: FutureBuilder<DataSnapshot>(
               future: getUserDetails(),
               builder:
@@ -89,9 +90,9 @@ class _GroceryHomeState extends State<GroceryHome> {
                   );
                 } else {
                   if (snapshot.hasData && snapshot.data!.exists) {
-                    dynamic data = snapshot.data!.value;
-                    String name = data['name'];
-                    String phoneNumber = data['phone'];
+                    // dynamic data = snapshot.data!.value;
+                    // String name = data['name'];
+                    // String phoneNumber = data['phone'];
 
                     return AppBar(
                       automaticallyImplyLeading: false,
@@ -99,9 +100,9 @@ class _GroceryHomeState extends State<GroceryHome> {
                       elevation: 0,
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text(
-                            'Hi, $name',
+                            'Grocery Store',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
@@ -188,7 +189,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        setState(() {});
+                        Get.toNamed('/GroceryForm');
                       },
                       child: Container(
                         width: 300,
@@ -233,7 +234,9 @@ class _GroceryHomeState extends State<GroceryHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed('/PendingReqGrocery');
+                      },
                       child: Container(
                         width: 300,
                         height: 150,

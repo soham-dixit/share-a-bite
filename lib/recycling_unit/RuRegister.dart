@@ -87,6 +87,7 @@ class _RuRegisterState extends State<RuRegister> {
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(
                 height: 10,
@@ -337,12 +338,13 @@ class _RuRegister2State extends State<RuRegister2> {
                 height: 18,
               ),
               const Text(
-                'Register as Recycling unit',
+                'Login as Recycling unit delivery partner',
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontSize: 26,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(
                 height: 10,
