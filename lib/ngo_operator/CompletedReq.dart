@@ -19,7 +19,7 @@ class _CompletedReqOpState extends State<CompletedReqOp> {
   String? uid = '';
   dynamic keys_list1 = [];
   dynamic pending_list = [];
-    dynamic keys_list2= [];
+  dynamic keys_list2 = [];
   int pendingCount = 0;
   String? key;
   List<dynamic> pendingListData = [];
@@ -31,15 +31,12 @@ class _CompletedReqOpState extends State<CompletedReqOp> {
     final databaseReference = FirebaseDatabase.instance.ref();
     DatabaseEvent event = await databaseReference.once();
     Map<dynamic, dynamic>? databaseData = event.snapshot.value as Map?;
-    keys_list1 = databaseData?['ngo']?[uid]?['volunteers']?.keys?.toList() ?? [];
+    keys_list1 =
+        databaseData?['ngo']?[uid]?['volunteers']?.keys?.toList() ?? [];
     keys_list2 =
         databaseData?['volunteers']?[uid]?['volunteers']?.keys?.toList() ?? [];
 
-
-
     pendingListData.clear();
-
-    
   }
 
   @override
@@ -82,41 +79,42 @@ class _CompletedReqOpState extends State<CompletedReqOp> {
                     SingleChildScrollView(
                       child: Column(children: [
                         FutureBuilder(
-                            future: getData(),
-                            builder: (context, AsyncSnapshot snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.waiting:
-                                  return Center(
-                                      child: CupertinoActivityIndicator());
-                                case ConnectionState.none:
-                                  return Text('none');
-                                case ConnectionState.active:
-                                  return Text('active');
-                                case ConnectionState.done:
-                                  if (snapshot.data.length > 0) {
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: BouncingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:
-                                          (snapshot.data.length / 10).floor(),
-                                      itemBuilder: (context, i) {
-                                        return ReqCard(
-                                            restroName:
-                                                snapshot.data[10 * i + 6],
-                                            foodName: snapshot.data[10 * i + 0],
-                                            foodType: snapshot.data[10 * i + 3],
-                                            shelfLife:
-                                                snapshot.data[10 * i + 7],
-                                            status: snapshot.data[10 * i + 9],
-                                            onPress: () {});
-                                      },
-                                    );
-                                  } else {
-                                    return Text('No pending requests');
-                                  }
-                              }
-                            })
+                          future: getData(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Center(
+                                    child: CupertinoActivityIndicator());
+                              case ConnectionState.none:
+                                return Text('none');
+                              case ConnectionState.active:
+                                return Text('active');
+                              case ConnectionState.done:
+                                if (snapshot.hasData &&
+                                    snapshot.data.length > 0) {
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: BouncingScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount:
+                                        (snapshot.data.length / 10).floor(),
+                                    itemBuilder: (context, i) {
+                                      return ReqCard(
+                                        restroName: snapshot.data[10 * i + 6],
+                                        foodName: snapshot.data[10 * i + 0],
+                                        foodType: snapshot.data[10 * i + 3],
+                                        shelfLife: snapshot.data[10 * i + 7],
+                                        status: snapshot.data[10 * i + 9],
+                                        onPress: () {},
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return Text('No requests');
+                                }
+                            }
+                          },
+                        )
                       ]),
                     ),
                   ],
