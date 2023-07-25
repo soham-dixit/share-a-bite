@@ -40,7 +40,7 @@ class _RuHomeState extends State<RuHome> {
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize:
-            Size.fromHeight(MediaQuery.of(context).size.height * 0.120),
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.080),
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -53,7 +53,9 @@ class _RuHomeState extends State<RuHome> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            padding: EdgeInsets.only(
+                top: // 0.0
+                    MediaQuery.of(context).size.height * 0.010),
             child: FutureBuilder<DataSnapshot>(
               future: getUserDetails(),
               builder:
@@ -100,7 +102,7 @@ class _RuHomeState extends State<RuHome> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Hi, $name',
+                            'Recycling Unit',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
@@ -203,7 +205,7 @@ class _RuHomeState extends State<RuHome> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SvgPicture.asset(
-                                'assets/mis/distribute.svg',
+                                'assets/mis/ongoing.svg',
                                 height: 90,
                                 width: 90,
                               ),
@@ -211,7 +213,7 @@ class _RuHomeState extends State<RuHome> {
                                 height: 5,
                               ),
                               const Text(
-                                'Distribute Excess Food',
+                                'Ongoing Requests',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Poppins',
