@@ -35,7 +35,7 @@ class _MainLoginState extends State<MainLogin> {
               children: [
                 const Center(
                   child: Text(
-                    'LOGIN',
+                    'Who are you?',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -320,18 +320,6 @@ class _MainLoginState extends State<MainLogin> {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: MainOrangeBorderButton(
-                    initialTitle: 'Login as Guest?',
-                    onPressed: () {
-                      Get.to(() => const GuestLogin());
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: MainButton(

@@ -232,6 +232,7 @@ class _RuVerify2State extends State<RuVerify2> {
     UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
             email: widget.email, password: widget.password);
+    await userCredential.user!.updateDisplayName(widget.name);
 
     saveInfo();
   }
